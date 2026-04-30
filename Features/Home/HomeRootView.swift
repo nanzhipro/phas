@@ -11,7 +11,7 @@ struct HomeRootView: View {
     NavigationSplitView {
       List {
         if let record = library.currentRecord {
-          Section("Virtual Machine") {
+          Section(L10n.text("home.sidebar.virtualMachine", fallback: "Virtual Machine")) {
             VStack(alignment: .leading, spacing: 6) {
               Text(record.name)
                 .font(.headline)
@@ -24,14 +24,12 @@ struct HomeRootView: View {
             }
             .padding(.vertical, 4)
           }
-        }
-
-        Section("Project") {
-          ForEach(model.sidebarSections, id: \.title) { section in
+        } else {
+          Section(L10n.text("home.sidebar.library", fallback: "Library")) {
             VStack(alignment: .leading, spacing: 6) {
-              Text(section.title)
+              Text(L10n.text("home.sidebar.noVM", fallback: "No virtual machine yet"))
                 .font(.headline)
-              Text(section.detail)
+              Text(model.emptyStateMessage)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             }
@@ -50,29 +48,23 @@ struct HomeRootView: View {
           } else {
             HStack(alignment: .top, spacing: 20) {
               summaryCard(
-                title: "Acceptance Target",
+                title: L10n.text("home.card.gettingStarted", fallback: "Before You Begin"),
                 icon: "checkmark.seal",
-                lines: model.acceptanceTargets
+                lines: model.gettingStartedHighlights
               )
               summaryCard(
-                title: "Support Matrix",
+                title: L10n.text("home.card.compatibility", fallback: "Compatibility"),
                 icon: "cpu",
-                lines: model.supportMatrix
+                lines: model.compatibilityHighlights
               )
             }
             .frame(maxWidth: .infinity)
           }
 
           summaryCard(
-            title: "Host Summary",
+            title: L10n.text("home.card.hostSummary", fallback: "Host Summary"),
             icon: "desktopcomputer",
             lines: hostSummaryLines
-          )
-
-          summaryCard(
-            title: "Implementation Trail",
-            icon: "shippingbox",
-            lines: model.phaseZeroDeliverables
           )
         }
         .padding(32)
@@ -84,7 +76,7 @@ struct HomeRootView: View {
       CreateVirtualMachineWizard(library: library)
     }
     .alert(
-      "Unable to Continue",
+      L10n.text("home.alert.unableContinue", fallback: "Unable to Continue"),
       isPresented: Binding(
         get: { library.activeErrorMessage != nil },
         set: { newValue in
@@ -94,7 +86,7 @@ struct HomeRootView: View {
         }
       )
     ) {
-      Button("OK", role: .cancel) {
+      Button(L10n.text("action.ok", fallback: "OK"), role: .cancel) {
         library.clearError()
       }
     } message: {
@@ -124,7 +116,7 @@ struct HomeRootView: View {
           .buttonStyle(.borderedProminent)
           .disabled(!library.canCreateVirtualMachine)
         } else {
-          Button("Open Runtime Window") {
+          Button(L10n.text("action.openRuntimeWindow", fallback: "Open Window")) {
             openRuntimeWindow()
           }
           .buttonStyle(.borderedProminent)
@@ -163,7 +155,7 @@ struct HomeRootView: View {
       HStack(alignment: .top, spacing: 20) {
         let snapshot = library.runtimeDetailSnapshot(for: record)
         summaryCard(
-          title: "Current VM",
+          title: L10n.text("home.card.currentVM", fallback: "Current VM"),
           icon: "shippingbox.circle",
           lines: snapshot.detailLines
         )
@@ -210,18 +202,43 @@ struct HomeRootView: View {
       return model.emptyStateMessage
     }
 
-    return
-      "A single VM already exists. The MVP stays intentionally single-VM, so creation remains blocked while runtime inspection, start/stop control, and error handling now move into the main product surface."
+    return L10n.text(
+      "home.existingVMMessage",
+      fallback:
+        "This version supports one virtual machine per Mac. Use the existing VM to continue."
+    )
   }
 
   private var hostSummaryLines: [String] {
     let snapshot = library.hostSnapshot
     return [
-      "Host architecture: \(snapshot.architecture.displayString).",
-      "Host system: \(snapshot.operatingSystemVersion.displayString).",
-      "Host memory: \(snapshot.totalMemoryGiB) GiB total, \(snapshot.maximumSafeMemoryMiB / 1024) GiB safe ceiling for the VM.",
-      "Host CPU: \(snapshot.activeCPUCount) active cores, up to \(snapshot.maximumSafeCPUCount) vCPU safe for the VM.",
-      "Recommended preset: \(snapshot.recommendedPreset.subtitle).",
+      L10n.format(
+        "home.host.architecture",
+        fallback: "Architecture: %@",
+        snapshot.architecture.displayString
+      ),
+      L10n.format(
+        "home.host.system",
+        fallback: "System: %@",
+        snapshot.operatingSystemVersion.displayString
+      ),
+      L10n.format(
+        "home.host.memory",
+        fallback: "Memory: %d GiB total, up to %d GiB recommended for the VM",
+        snapshot.totalMemoryGiB,
+        snapshot.maximumSafeMemoryMiB / 1024
+      ),
+      L10n.format(
+        "home.host.cpu",
+        fallback: "CPU: %d active cores, up to %d vCPU recommended",
+        snapshot.activeCPUCount,
+        snapshot.maximumSafeCPUCount
+      ),
+      L10n.format(
+        "home.host.preset",
+        fallback: "Recommended preset: %@",
+        snapshot.recommendedPreset.subtitle
+      ),
     ]
   }
 
@@ -261,23 +278,17 @@ struct HomeRootView: View {
     let availability = library.runtimeControlAvailability
 
     return VStack(alignment: .leading, spacing: 16) {
-      Label("Lifecycle", systemImage: "playpause.circle")
+      Label(L10n.text("home.controlSection", fallback: "Controls"), systemImage: "playpause.circle")
         .font(.headline)
 
-      Text(
-        "Phase-4 keeps the UI bound to product-level state and the phase-3 session service. The window, controls, and detail surface stay on the single-VM MVP path."
-      )
-      .font(.subheadline)
-      .foregroundStyle(.secondary)
-
-      Button("Open Runtime Window") {
+      Button(L10n.text("action.openRuntimeWindow", fallback: "Open Window")) {
         openRuntimeWindow()
       }
       .buttonStyle(.borderedProminent)
       .disabled(!availability.canOpenWindow)
 
       HStack(spacing: 10) {
-        Button("Start") {
+        Button(L10n.text("action.start", fallback: "Start")) {
           Task {
             await library.startCurrentVirtualMachine()
           }
@@ -285,13 +296,13 @@ struct HomeRootView: View {
         .buttonStyle(.bordered)
         .disabled(!availability.canStart)
 
-        Button("Request Stop") {
+        Button(L10n.text("action.stop", fallback: "Shut Down")) {
           library.requestCurrentVirtualMachineStop()
         }
         .buttonStyle(.bordered)
         .disabled(!availability.canRequestStop)
 
-        Button("Force Stop") {
+        Button(L10n.text("action.forceStop", fallback: "Force Stop")) {
           Task {
             await library.forceStopCurrentVirtualMachine()
           }
@@ -301,12 +312,12 @@ struct HomeRootView: View {
       }
 
       HStack(spacing: 10) {
-        Button("Open VM Storage") {
+        Button(L10n.text("action.openStorage", fallback: "Open Storage")) {
           openVMStorageFolder()
         }
         .buttonStyle(.bordered)
 
-        Button("Open Logs") {
+        Button(L10n.text("action.openLogs", fallback: "Open Logs")) {
           openRuntimeLogs(for: record)
         }
         .buttonStyle(.bordered)
@@ -341,7 +352,7 @@ struct HomeRootView: View {
 
       HStack(spacing: 10) {
         if report.actions.canRetryStart {
-          Button("Retry Start") {
+          Button(L10n.text("action.retryStart", fallback: "Retry Start")) {
             Task {
               await library.startCurrentVirtualMachine()
             }
@@ -350,14 +361,14 @@ struct HomeRootView: View {
         }
 
         if report.actions.canRecoverToStopped {
-          Button("Recover to Stopped") {
+          Button(L10n.text("action.markStopped", fallback: "Mark as Stopped")) {
             library.recoverCurrentVirtualMachineToStopped()
           }
           .buttonStyle(.bordered)
         }
 
         if report.actions.canReloadFromDisk {
-          Button("Reload State") {
+          Button(L10n.text("action.reload", fallback: "Reload")) {
             library.reload()
           }
           .buttonStyle(.bordered)

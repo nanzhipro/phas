@@ -41,9 +41,10 @@ struct VirtualMachineRecoveryEvaluator {
         correctedRecord: nil,
         report: VirtualMachineRecoveryReport(
           severity: .healthy,
-          headline: "Runtime Session Attached",
-          summary:
-            "The VM is backed by a live runtime session, so the current state can be trusted.",
+          headline: L10n.text("recovery.headline.connected", fallback: "Connected"),
+          summary: L10n.text(
+            "recovery.summary.connected",
+            fallback: "The virtual machine is connected and its state is current."),
           actions: VirtualMachineRecoveryActions(
             canRetryStart: false,
             canRecoverToStopped: false,
@@ -61,9 +62,12 @@ struct VirtualMachineRecoveryEvaluator {
         correctedRecord: correctedRecord,
         report: VirtualMachineRecoveryReport(
           severity: .error,
-          headline: "Interrupted Runtime Detected",
-          summary:
-            "The app relaunched without a live Virtualization session. The persisted transient state is no longer trusted, so the VM has been moved to Error until you inspect logs and retry or recover it to Stopped.",
+          headline: L10n.text("recovery.headline.sessionLost", fallback: "Session Lost"),
+          summary: L10n.text(
+            "recovery.summary.sessionLost",
+            fallback:
+              "The app reopened without an active VM session. Check the logs, then restart or mark the VM as stopped."
+          ),
           actions: VirtualMachineRecoveryActions(
             canRetryStart: true,
             canRecoverToStopped: true,
@@ -78,9 +82,10 @@ struct VirtualMachineRecoveryEvaluator {
         correctedRecord: nil,
         report: VirtualMachineRecoveryReport(
           severity: .warning,
-          headline: "Recovery Required",
-          summary:
-            "Inspect the logs, then retry start or move the VM back to Stopped before continuing.",
+          headline: L10n.text("recovery.headline.actionNeeded", fallback: "Action Needed"),
+          summary: L10n.text(
+            "recovery.summary.actionNeeded",
+            fallback: "Check the logs, then restart or mark the VM as stopped."),
           actions: VirtualMachineRecoveryActions(
             canRetryStart: true,
             canRecoverToStopped: true,
@@ -95,10 +100,14 @@ struct VirtualMachineRecoveryEvaluator {
         correctedRecord: nil,
         report: VirtualMachineRecoveryReport(
           severity: .healthy,
-          headline: "Relaunch Ready",
+          headline: L10n.text("recovery.headline.ready", fallback: "Ready"),
           summary: restoreRuntimeWindowRequested
-            ? "The runtime window can be restored for this VM because the persisted state is stable."
-            : "The persisted VM state is stable and ready for the next explicit action.",
+            ? L10n.text(
+              "recovery.summary.readyRestore",
+              fallback: "This virtual machine is ready, and its window can be reopened.")
+            : L10n.text(
+              "recovery.summary.ready",
+              fallback: "This virtual machine is ready for the next action."),
           actions: VirtualMachineRecoveryActions(
             canRetryStart: true,
             canRecoverToStopped: false,

@@ -6,7 +6,9 @@ enum VirtualMachineLifecycleControllerError: LocalizedError {
   var errorDescription: String? {
     switch self {
     case .missingInstallImagePath:
-      return "An install image is required before the VM can boot from installation media."
+      return L10n.text(
+        "error.lifecycle.missingInstallImage",
+        fallback: "Attach an installer image before starting from the installer.")
     }
   }
 }

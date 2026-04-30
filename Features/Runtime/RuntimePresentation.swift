@@ -55,13 +55,25 @@ struct VirtualMachineRuntimeDetailSnapshot: Equatable {
 
   init(record: VirtualMachineRecord, bundleURL: URL, logURL: URL, latestMessage: String?) {
     self.title = record.name
-    self.stateLine = "State: \(record.stateDisplayName)"
-    self.resourceLine = "Resources: \(record.resourceSummary)"
-    self.bootSourceLine = "Boot source: \(record.bootSource.displayName)"
-    self.installImageLine = "Install image: \(record.installImagePath ?? "Not attached")"
-    self.bundleLine = "Bundle: \(bundleURL.path)"
-    self.logsLine = "Logs: \(logURL.path)"
-    self.latestMessageLine = latestMessage.map { "Latest issue: \($0)" }
+    self.stateLine = L10n.format(
+      "runtime.detail.state", fallback: "State: %@", record.stateDisplayName)
+    self.resourceLine = L10n.format(
+      "runtime.detail.resources", fallback: "Resources: %@", record.resourceSummary)
+    self.bootSourceLine = L10n.format(
+      "runtime.detail.bootSource", fallback: "Boot source: %@", record.bootSource.displayName)
+    self.installImageLine = L10n.format(
+      "runtime.detail.installImage",
+      fallback: "Install image: %@",
+      record.installImagePath
+        ?? L10n.text("runtime.detail.noInstallImage", fallback: "Not attached")
+    )
+    self.bundleLine = L10n.format(
+      "runtime.detail.bundle", fallback: "Bundle: %@", bundleURL.path)
+    self.logsLine = L10n.format(
+      "runtime.detail.logs", fallback: "Logs: %@", logURL.path)
+    self.latestMessageLine = latestMessage.map {
+      L10n.format("recovery.latestIssue", fallback: "Latest issue: %@", $0)
+    }
   }
 
   var detailLines: [String] {
@@ -80,9 +92,9 @@ extension VirtualMachineBootSource {
   fileprivate var displayName: String {
     switch self {
     case .installationImage:
-      return "Installation Image"
+      return L10n.text("runtime.bootSource.installer", fallback: "Installer")
     case .diskImage:
-      return "Disk Image"
+      return L10n.text("runtime.bootSource.disk", fallback: "Disk")
     }
   }
 }

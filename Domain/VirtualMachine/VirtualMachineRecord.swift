@@ -120,10 +120,27 @@ struct VirtualMachineRecord: Codable, Equatable, Identifiable, Sendable {
   }
 
   var resourceSummary: String {
-    "\(resources.cpuCount) vCPU • \(resources.memoryMiB / 1024) GiB memory • \(resources.diskGiB) GiB disk"
+    L10n.format(
+      "record.resourceSummary",
+      fallback: "%d vCPU • %d GiB memory • %d GiB disk",
+      resources.cpuCount,
+      resources.memoryMiB / 1024,
+      resources.diskGiB
+    )
   }
 
   var stateDisplayName: String {
-    state.rawValue.capitalized
+    switch state {
+    case .draft:
+      return L10n.text("state.draft", fallback: "Not Installed")
+    case .installing:
+      return L10n.text("state.installing", fallback: "Installing")
+    case .stopped:
+      return L10n.text("state.stopped", fallback: "Stopped")
+    case .running:
+      return L10n.text("state.running", fallback: "Running")
+    case .error:
+      return L10n.text("state.error", fallback: "Needs Attention")
+    }
   }
 }

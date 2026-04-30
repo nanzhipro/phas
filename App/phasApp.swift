@@ -12,13 +12,15 @@ struct phasApp: App {
         .frame(minWidth: 980, minHeight: 680)
     }
 
-    Window("Virtual Machine", id: Self.runtimeWindowID) {
+    Window(
+      L10n.text("app.runtimeWindowTitle", fallback: "Virtual Machine"), id: Self.runtimeWindowID
+    ) {
       VirtualMachineRuntimeWindowView(library: library)
         .frame(minWidth: 1200, minHeight: 780)
     }
     .commands {
       CommandGroup(replacing: .newItem) {
-        Button("Create Virtual Machine") {
+        Button(L10n.text("action.createVM", fallback: "Create VM")) {
           library.presentCreateWizard()
         }
         .disabled(!library.canCreateVirtualMachine)

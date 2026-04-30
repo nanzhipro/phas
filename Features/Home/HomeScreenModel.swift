@@ -1,58 +1,41 @@
 import Foundation
 
 struct HomeScreenModel: Equatable {
-  struct SidebarSection: Equatable {
-    let title: String
-    let detail: String
-  }
-
   let title: String
   let subtitle: String
   let emptyStateMessage: String
   let primaryActionTitle: String
   let secondaryActionTitle: String
-  let sidebarSections: [SidebarSection]
-  let acceptanceTargets: [String]
-  let supportMatrix: [String]
-  let phaseZeroDeliverables: [String]
+  let gettingStartedHighlights: [String]
+  let compatibilityHighlights: [String]
 }
 
 extension HomeScreenModel {
   static let `default` = HomeScreenModel(
-    title: "Local Linux VM, kept intentionally narrow.",
-    subtitle: "A single-VM Apple Virtualization MVP for Apple silicon Macs.",
-    emptyStateMessage:
-      "No virtual machines exist yet. This phase establishes the native app shell, build pipeline, entitlement wiring, and the placeholder surface where VM creation, lifecycle control, and diagnostics will land in later phases.",
-    primaryActionTitle: "Create Virtual Machine",
-    secondaryActionTitle: "Open VM Storage",
-    sidebarSections: [
-      SidebarSection(
-        title: "Current Focus",
-        detail: "Phase-0 locks the app entry point, entitlement, and shell layout."
-      ),
-      SidebarSection(
-        title: "Runtime Promise",
-        detail: "Single VM, GUI install flow, persistent disk, NAT networking."
-      ),
-      SidebarSection(
-        title: "Out of Scope",
-        detail: "Snapshots, bridged networking, shared folders, clipboard sync, Intel support."
-      ),
+    title: L10n.text("home.title", fallback: "Linux virtual machine for your Mac."),
+    subtitle: L10n.text(
+      "home.subtitle", fallback: "Create, run, and manage one local Linux VM."),
+    emptyStateMessage: L10n.text(
+      "home.emptyStateMessage",
+      fallback: "Create a virtual machine to install Linux and keep it on this Mac."),
+    primaryActionTitle: L10n.text("action.createVM", fallback: "Create VM"),
+    secondaryActionTitle: L10n.text("action.openStorage", fallback: "Open Storage"),
+    gettingStartedHighlights: [
+      L10n.text("home.gettingStarted.1", fallback: "Prepare a Linux ARM64 ISO image."),
+      L10n.text(
+        "home.gettingStarted.2",
+        fallback: "Choose CPU, memory, and disk size for this Mac."),
+      L10n.text(
+        "home.gettingStarted.3",
+        fallback: "Complete installation in the runtime window."),
     ],
-    acceptanceTargets: [
-      "Create, install, restart, and delete one Linux VM from a native macOS app.",
-      "Preserve VM bundle data under ~/Library/Application Support/phas/VMs/.",
-      "Keep every failure path attached to an explicit recovery action instead of silent mutation.",
-    ],
-    supportMatrix: [
-      "Host: Apple silicon + macOS 14 or newer.",
-      "Primary validation image: Ubuntu Desktop ARM64 LTS.",
-      "Secondary compatibility pass: Fedora Workstation ARM64.",
-    ],
-    phaseZeroDeliverables: [
-      "SwiftUI app entry point and stable empty-state home screen.",
-      "Virtualization entitlement wired into the target.",
-      "Documented xcodegen + xcodebuild workflow that succeeds on the current toolchain.",
+    compatibilityHighlights: [
+      L10n.text(
+        "home.support.1", fallback: "Host Mac: Apple silicon, macOS 14 or later."),
+      L10n.text(
+        "home.support.2", fallback: "Recommended image: Ubuntu Desktop ARM64 LTS."),
+      L10n.text(
+        "home.support.3", fallback: "Also tested with Fedora Workstation ARM64."),
     ]
   )
 }

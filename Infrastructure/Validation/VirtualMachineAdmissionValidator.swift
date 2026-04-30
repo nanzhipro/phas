@@ -34,58 +34,95 @@ struct VirtualMachineAdmissionValidator: VirtualMachineAdmissionValidating {
     var issues = inspection.issues
 
     if snapshot.architecture != .appleSilicon {
-      issues.append(blocking("host-arch", "phas MVP only supports Apple silicon hosts."))
+      issues.append(
+        blocking(
+          "host-arch",
+          L10n.text("admission.hostArch", fallback: "Only Apple silicon Macs are supported.")
+        ))
     }
 
     if snapshot.operatingSystemVersion < HostMachineSnapshot.minimumSupportedSystem {
-      issues.append(blocking("host-os", "macOS 14 or newer is required before creating a VM."))
+      issues.append(
+        blocking(
+          "host-os",
+          L10n.text("admission.hostOS", fallback: "macOS 14 or later is required.")
+        ))
     }
 
     if !existingRecords.isEmpty {
       issues.append(
         blocking(
           "single-vm",
-          "phas MVP only supports one VM at a time. Delete the existing bundle before creating another."
+          L10n.text(
+            "admission.singleVM",
+            fallback: "Only one virtual machine is supported in this version.")
         ))
     }
 
     if request.trimmedName.isEmpty {
-      issues.append(blocking("name-empty", "A VM name is required."))
+      issues.append(
+        blocking(
+          "name-empty",
+          L10n.text("admission.nameRequired", fallback: "Enter a virtual machine name.")
+        ))
     }
 
     if request.resources.cpuCount < VirtualMachineResources.minimumCPUCount {
       issues.append(
-        blocking("cpu-min", "CPU must be at least \(VirtualMachineResources.minimumCPUCount) vCPU.")
+        blocking(
+          "cpu-min",
+          L10n.format(
+            "admission.cpuMin",
+            fallback: "Allocate at least %d vCPU.",
+            VirtualMachineResources.minimumCPUCount
+          )
+        )
       )
     }
 
     if request.resources.memoryMiB < VirtualMachineResources.minimumMemoryMiB {
-      issues.append(blocking("memory-min", "Memory must be at least 4 GiB for GUI Linux installs."))
+      issues.append(
+        blocking(
+          "memory-min",
+          L10n.text("admission.memoryMin", fallback: "Allocate at least 4 GiB of memory.")
+        ))
     }
 
     if request.resources.diskGiB < VirtualMachineResources.minimumDiskGiB {
-      issues.append(blocking("disk-min", "Disk must be at least 32 GiB."))
+      issues.append(
+        blocking(
+          "disk-min",
+          L10n.text("admission.diskMin", fallback: "Allocate at least 32 GiB of disk space.")
+        ))
     }
 
     if request.resources.cpuCount > snapshot.maximumSafeCPUCount {
       issues.append(
         blocking(
           "cpu-safe-max",
-          "This host should keep at least one CPU core for macOS. Reduce the VM CPU count."))
+          L10n.text("admission.cpuSafeMax", fallback: "Reduce CPU allocation for this Mac."))
+      )
     }
 
     if request.resources.memoryMiB > snapshot.maximumSafeMemoryMiB {
       issues.append(
         blocking(
           "memory-safe-max",
-          "This memory selection exceeds the safe threshold for the current host."))
+          L10n.text(
+            "admission.memorySafeMax",
+            fallback: "Reduce memory allocation for this Mac."))
+      )
     }
 
     let requiredDiskBytes = Int64(request.resources.diskSizeBytes) + 8 * 1_073_741_824
     if snapshot.availableDiskBytes > 0 && snapshot.availableDiskBytes < requiredDiskBytes {
       issues.append(
         blocking(
-          "disk-space", "Available disk space is too low for bundle creation and OS installation."))
+          "disk-space",
+          L10n.text(
+            "admission.diskSpace",
+            fallback: "Not enough free disk space for setup and installation."))
+      )
     }
 
     return VirtualMachineAdmissionReport(
@@ -102,7 +139,12 @@ struct VirtualMachineAdmissionValidator: VirtualMachineAdmissionValidating {
     guard !trimmedPath.isEmpty else {
       return (
         .unverified,
-        [blocking("iso-missing", "Choose a Linux ARM64 installation ISO before creating the VM.")]
+        [
+          blocking(
+            "iso-missing",
+            L10n.text("admission.isoMissing", fallback: "Choose a Linux ARM64 installer image.")
+          )
+        ]
       )
     }
 
@@ -117,21 +159,36 @@ struct VirtualMachineAdmissionValidator: VirtualMachineAdmissionValidating {
         .unverified,
         [
           blocking(
-            "iso-not-found", "The selected ISO path does not exist or points to a directory.")
+            "iso-not-found",
+            L10n.text(
+              "admission.isoNotFound",
+              fallback: "The selected installer image can't be found.")
+          )
         ]
       )
     }
 
     guard fileManager.isReadableFile(atPath: url.path) else {
       return (
-        .unverified, [blocking("iso-unreadable", "The selected ISO is not readable by the app.")]
+        .unverified,
+        [
+          blocking(
+            "iso-unreadable",
+            L10n.text(
+              "admission.isoUnreadable",
+              fallback: "The selected installer image can't be read.")
+          )
+        ]
       )
     }
 
     let allowedExtensions = ["iso", "img"]
     if !allowedExtensions.contains(url.pathExtension.lowercased()) {
       issues.append(
-        blocking("iso-extension", "The selected file does not look like an install ISO or IMG."))
+        blocking(
+          "iso-extension",
+          L10n.text("admission.isoExtension", fallback: "Select an ISO or IMG installer image.")
+        ))
     }
 
     let fileName = url.lastPathComponent.lowercased()
@@ -139,12 +196,19 @@ struct VirtualMachineAdmissionValidator: VirtualMachineAdmissionValidating {
 
     if architecture == .x86_64 {
       issues.append(
-        blocking("iso-arch", "The selected image appears to target x86_64/amd64 instead of ARM64."))
+        blocking(
+          "iso-arch",
+          L10n.text(
+            "admission.isoArch",
+            fallback: "The selected image appears to be x86_64/amd64, not ARM64.")
+        ))
     } else if architecture == .unknown {
       issues.append(
         warning(
           "iso-arch-unknown",
-          "Could not confirm that the selected image is ARM64 from its filename. Proceed only if you know it matches Apple silicon."
+          L10n.text(
+            "admission.isoArchUnknown",
+            fallback: "The image architecture couldn't be confirmed. Make sure it is ARM64.")
         ))
     }
 
@@ -156,14 +220,20 @@ struct VirtualMachineAdmissionValidator: VirtualMachineAdmissionValidating {
       issues.append(
         warning(
           "distribution-secondary",
-          "Fedora Workstation ARM64 is part of the supplementary validation matrix, not the primary release target."
+          L10n.text(
+            "admission.distributionSecondary",
+            fallback:
+              "Fedora Workstation ARM64 has been tested, but Ubuntu Desktop ARM64 is recommended."
+          )
         ))
     } else {
       supportLevel = .unverified
       issues.append(
         warning(
           "distribution-unverified",
-          "This image is outside the primary and secondary validation matrix. You can continue, but compatibility is not guaranteed."
+          L10n.text(
+            "admission.distributionUnverified",
+            fallback: "Compatibility with this image hasn't been verified.")
         ))
     }
 

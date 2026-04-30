@@ -8,14 +8,20 @@ enum VirtualMachineConfigurationFactoryError: LocalizedError {
 
   var errorDescription: String? {
     switch self {
-    case .missingInstallImage(let id):
-      return
-        "VM \(id.rawValue) is configured to boot from installation media, but no ISO path is available."
+    case .missingInstallImage:
+      return L10n.text(
+        "error.config.missingInstallImage",
+        fallback: "No installer image is attached to this virtual machine.")
     case .unreadableInstallImage(let url):
-      return "The installation image is not readable at \(url.path)."
-    case .unsupportedNetworkMode(let mode):
-      return
-        "The network mode \(mode.rawValue) is not supported by the current configuration factory."
+      return L10n.format(
+        "error.config.unreadableInstallImage",
+        fallback: "The installer image can't be read at %@.",
+        url.path
+      )
+    case .unsupportedNetworkMode:
+      return L10n.text(
+        "error.config.unsupportedNetworkMode",
+        fallback: "This network mode isn't supported.")
     }
   }
 }

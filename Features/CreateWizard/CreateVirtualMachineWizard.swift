@@ -25,11 +25,11 @@ struct CreateVirtualMachineWizard: View {
     var title: String {
       switch self {
       case .light:
-        return "Light"
+        return L10n.text("preset.light", fallback: "Light")
       case .standard:
-        return "Standard"
+        return L10n.text("preset.standard", fallback: "Standard")
       case .custom:
-        return "Custom"
+        return L10n.text("preset.custom", fallback: "Custom")
       }
     }
   }
@@ -64,13 +64,15 @@ struct CreateVirtualMachineWizard: View {
     VStack(alignment: .leading, spacing: 18) {
       HStack(alignment: .firstTextBaseline) {
         VStack(alignment: .leading, spacing: 6) {
-          Text("Create Virtual Machine")
+          Text(L10n.text("wizard.title", fallback: "Create Virtual Machine"))
             .font(.system(size: 28, weight: .bold, design: .rounded))
-          Text("Collect the minimum inputs for a single Apple Virtualization Linux install.")
-            .foregroundStyle(.secondary)
+          Text(
+            L10n.text("wizard.subtitle", fallback: "Set up one Linux virtual machine for this Mac.")
+          )
+          .foregroundStyle(.secondary)
         }
         Spacer()
-        Button("Cancel") {
+        Button(L10n.text("action.cancel", fallback: "Cancel")) {
           library.dismissCreateWizard()
         }
         .keyboardShortcut(.cancelAction)
@@ -78,32 +80,62 @@ struct CreateVirtualMachineWizard: View {
 
       ScrollView {
         VStack(alignment: .leading, spacing: 20) {
-          card(title: "Host Summary", systemImage: "desktopcomputer") {
-            infoLine(label: "Architecture", value: snapshot.architecture.displayString)
-            infoLine(label: "System", value: snapshot.operatingSystemVersion.displayString)
-            infoLine(label: "Memory", value: "\(snapshot.totalMemoryGiB) GiB total")
-            infoLine(label: "CPU", value: "\(snapshot.activeCPUCount) active cores")
-            infoLine(label: "Recommended Preset", value: snapshot.recommendedPreset.subtitle)
+          card(
+            title: L10n.text("home.card.hostSummary", fallback: "Host Summary"),
+            systemImage: "desktopcomputer"
+          ) {
+            infoLine(
+              label: L10n.text("wizard.field.architecture", fallback: "Architecture"),
+              value: snapshot.architecture.displayString)
+            infoLine(
+              label: L10n.text("wizard.field.system", fallback: "System"),
+              value: snapshot.operatingSystemVersion.displayString)
+            infoLine(
+              label: L10n.text("wizard.field.memory", fallback: "Memory"),
+              value: L10n.format(
+                "wizard.value.memory", fallback: "%d GiB total", snapshot.totalMemoryGiB))
+            infoLine(
+              label: L10n.text("wizard.field.cpu", fallback: "CPU"),
+              value: L10n.format(
+                "wizard.value.cpu", fallback: "%d active cores", snapshot.activeCPUCount))
+            infoLine(
+              label: L10n.text("wizard.field.recommendedPreset", fallback: "Recommended Preset"),
+              value: snapshot.recommendedPreset.subtitle)
           }
 
-          card(title: "Basics", systemImage: "square.and.pencil") {
+          card(
+            title: L10n.text("wizard.card.basics", fallback: "Setup"),
+            systemImage: "square.and.pencil"
+          ) {
             VStack(alignment: .leading, spacing: 12) {
-              TextField("VM name", text: $name)
-                .textFieldStyle(.roundedBorder)
+              TextField(
+                L10n.text("wizard.field.namePlaceholder", fallback: "Virtual machine name"),
+                text: $name
+              )
+              .textFieldStyle(.roundedBorder)
 
               HStack(spacing: 12) {
-                TextField("/path/to/ubuntu-arm64.iso", text: $installImagePath)
-                  .textFieldStyle(.roundedBorder)
-                Button("Browse…") {
+                TextField(
+                  L10n.text(
+                    "wizard.field.installImagePlaceholder", fallback: "/path/to/linux-arm64.iso"),
+                  text: $installImagePath
+                )
+                .textFieldStyle(.roundedBorder)
+                Button(L10n.text("wizard.button.browse", fallback: "Browse…")) {
                   browseForInstallImage()
                 }
               }
             }
           }
 
-          card(title: "Resources", systemImage: "slider.horizontal.3") {
+          card(
+            title: L10n.text("wizard.card.resources", fallback: "Resources"),
+            systemImage: "slider.horizontal.3"
+          ) {
             VStack(alignment: .leading, spacing: 14) {
-              Picker("Preset", selection: $selectedPreset) {
+              Picker(
+                L10n.text("wizard.field.preset", fallback: "Preset"), selection: $selectedPreset
+              ) {
                 ForEach(PresetSelection.allCases) { selection in
                   Text(selection.title).tag(selection)
                 }
@@ -112,30 +144,29 @@ struct CreateVirtualMachineWizard: View {
 
               HStack(spacing: 18) {
                 Stepper(value: $cpuCount, in: 1...max(snapshot.activeCPUCount, 8)) {
-                  Text("CPU: \(cpuCount) vCPU")
+                  Text(L10n.format("wizard.stepper.cpu", fallback: "CPU: %d vCPU", cpuCount))
                 }
                 Stepper(value: $memoryGiB, in: 1...max(snapshot.totalMemoryGiB, 8)) {
-                  Text("Memory: \(memoryGiB) GiB")
+                  Text(L10n.format("wizard.stepper.memory", fallback: "Memory: %d GiB", memoryGiB))
                 }
                 Stepper(value: $diskGiB, in: 8...256) {
-                  Text("Disk: \(diskGiB) GiB")
+                  Text(L10n.format("wizard.stepper.disk", fallback: "Disk: %d GiB", diskGiB))
                 }
               }
 
-              Text(
-                "Light: 2/4/32. Standard: 4/8/64. Custom remains bounded by admission rules so the VM can still boot on the current host."
-              )
-              .font(.footnote)
-              .foregroundStyle(.secondary)
+              Text(L10n.text("wizard.resourcesHint", fallback: "Light: 2/4/32. Standard: 4/8/64."))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
           }
 
-          card(title: "Admission Report", systemImage: "exclamationmark.bubble") {
+          card(
+            title: L10n.text("wizard.card.review", fallback: "Checks"),
+            systemImage: "exclamationmark.bubble"
+          ) {
             if report.issues.isEmpty {
-              Text(
-                "No blocking issues or warnings. This configuration can be created as a draft VM."
-              )
-              .foregroundStyle(.secondary)
+              Text(L10n.text("wizard.ready", fallback: "This setup is ready."))
+                .foregroundStyle(.secondary)
             } else {
               VStack(alignment: .leading, spacing: 10) {
                 ForEach(report.issues) { issue in
@@ -160,12 +191,12 @@ struct CreateVirtualMachineWizard: View {
 
       HStack {
         if !report.warnings.isEmpty {
-          Text("Warnings are visible, but only blocking issues disable creation.")
+          Text(L10n.text("wizard.warningsHint", fallback: "Warnings won't block creation."))
             .font(.footnote)
             .foregroundStyle(.secondary)
         }
         Spacer()
-        Button("Create Draft VM") {
+        Button(L10n.text("wizard.create", fallback: "Create VM")) {
           library.createVirtualMachine(from: draftRequest)
         }
         .buttonStyle(.borderedProminent)
@@ -218,7 +249,7 @@ struct CreateVirtualMachineWizard: View {
     panel.canChooseDirectories = false
     panel.canChooseFiles = true
     panel.allowsMultipleSelection = false
-    panel.prompt = "Choose Install Image"
+    panel.prompt = L10n.text("wizard.prompt.chooseInstallImage", fallback: "Choose Install Image")
 
     if panel.runModal() == .OK {
       installImagePath = panel.url?.path ?? ""

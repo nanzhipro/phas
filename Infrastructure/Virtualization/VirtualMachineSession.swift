@@ -7,7 +7,11 @@ enum VirtualMachineSessionError: LocalizedError {
   var errorDescription: String? {
     switch self {
     case .cannotPersistState(let error):
-      return "Unable to persist the VM state. \(error.localizedDescription)"
+      return L10n.format(
+        "error.session.persistState",
+        fallback: "Couldn't save the virtual machine state. %@",
+        error.localizedDescription
+      )
     }
   }
 }

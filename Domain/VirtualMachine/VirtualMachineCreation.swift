@@ -34,9 +34,9 @@ enum VirtualMachineResourcePreset: String, CaseIterable, Identifiable, Sendable 
   var title: String {
     switch self {
     case .light:
-      return "Light"
+      return L10n.text("preset.light", fallback: "Light")
     case .standard:
-      return "Standard"
+      return L10n.text("preset.standard", fallback: "Standard")
     }
   }
 
@@ -86,9 +86,9 @@ enum HostArchitecture: String, Sendable {
   var displayString: String {
     switch self {
     case .appleSilicon:
-      return "Apple silicon"
+      return L10n.text("host.architecture.appleSilicon", fallback: "Apple silicon")
     case .unsupported:
-      return "Unsupported host architecture"
+      return L10n.text("host.architecture.unsupported", fallback: "Unsupported")
     }
   }
 }

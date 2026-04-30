@@ -47,6 +47,7 @@ final class RuntimePresentationTests: XCTestCase {
 
     XCTAssertEqual(snapshot.title, "Ubuntu")
     XCTAssertEqual(snapshot.stateLine, "State: Stopped")
+    XCTAssertEqual(snapshot.resourceLine, "Resources: 4 vCPU • 8 GiB memory • 64 GiB disk")
     XCTAssertTrue(snapshot.bundleLine.contains("vm-runtime.vmbundle"))
     XCTAssertTrue(snapshot.logsLine.contains("runtime.log"))
     XCTAssertEqual(snapshot.latestMessageLine, "Latest issue: Guest stopped unexpectedly.")

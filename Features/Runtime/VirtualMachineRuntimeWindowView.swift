@@ -13,10 +13,13 @@ struct VirtualMachineRuntimeWindowView: View {
         }
       } else {
         ContentUnavailableView(
-          "Runtime Window Unavailable",
+          L10n.text("wizard.runtimeUnavailableTitle", fallback: "Runtime Window Unavailable"),
           systemImage: "display",
           description: Text(
-            "Create a VM first, then open the runtime window from the home surface.")
+            L10n.text(
+              "wizard.runtimeUnavailableDescription",
+              fallback: "Create a virtual machine first, then open its window.")
+          )
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(nsColor: .windowBackgroundColor))
@@ -54,20 +57,9 @@ struct VirtualMachineRuntimeWindowView: View {
           .font(.title2.weight(.semibold))
 
         detailCard(
-          title: "Runtime Details",
+          title: L10n.text("runtime.card.details", fallback: "Details"),
           icon: "list.bullet.rectangle",
           lines: snapshot.detailLines
-        )
-
-        detailCard(
-          title: "Current Boundary",
-          icon: "scope",
-          lines: [
-            "Single VM only.",
-            "No relaunch recovery yet.",
-            "No diagnostics export yet.",
-            "Phase-5 owns recovery and diagnostics.",
-          ]
         )
 
         if let report = library.recoveryReport {
@@ -75,12 +67,12 @@ struct VirtualMachineRuntimeWindowView: View {
         }
 
         HStack(spacing: 10) {
-          Button("Open VM Storage") {
+          Button(L10n.text("action.openStorage", fallback: "Open Storage")) {
             NSWorkspace.shared.open(library.bundleLocation(for: record))
           }
           .buttonStyle(.bordered)
 
-          Button("Open Logs") {
+          Button(L10n.text("action.openLogs", fallback: "Open Logs")) {
             let logURL = library.logFileURL(for: record)
             let destination =
               FileManager.default.fileExists(atPath: logURL.path)
@@ -113,7 +105,7 @@ struct VirtualMachineRuntimeWindowView: View {
         Spacer()
 
         HStack(spacing: 10) {
-          Button("Start") {
+          Button(L10n.text("action.start", fallback: "Start")) {
             Task {
               await library.startCurrentVirtualMachine()
             }
@@ -121,13 +113,13 @@ struct VirtualMachineRuntimeWindowView: View {
           .buttonStyle(.borderedProminent)
           .disabled(!availability.canStart)
 
-          Button("Request Stop") {
+          Button(L10n.text("action.stop", fallback: "Shut Down")) {
             library.requestCurrentVirtualMachineStop()
           }
           .buttonStyle(.bordered)
           .disabled(!availability.canRequestStop)
 
-          Button("Force Stop") {
+          Button(L10n.text("action.forceStop", fallback: "Force Stop")) {
             Task {
               await library.forceStopCurrentVirtualMachine()
             }
@@ -185,7 +177,7 @@ struct VirtualMachineRuntimeWindowView: View {
 
       HStack(spacing: 10) {
         if report.actions.canRetryStart {
-          Button("Retry Start") {
+          Button(L10n.text("action.retryStart", fallback: "Retry Start")) {
             Task {
               await library.startCurrentVirtualMachine()
             }
@@ -194,14 +186,14 @@ struct VirtualMachineRuntimeWindowView: View {
         }
 
         if report.actions.canRecoverToStopped {
-          Button("Recover to Stopped") {
+          Button(L10n.text("action.markStopped", fallback: "Mark as Stopped")) {
             library.recoverCurrentVirtualMachineToStopped()
           }
           .buttonStyle(.bordered)
         }
 
         if report.actions.canReloadFromDisk {
-          Button("Reload State") {
+          Button(L10n.text("action.reload", fallback: "Reload")) {
             library.reload()
           }
           .buttonStyle(.bordered)

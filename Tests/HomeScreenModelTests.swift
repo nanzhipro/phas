@@ -3,21 +3,13 @@ import XCTest
 @testable import phas
 
 final class HomeScreenModelTests: XCTestCase {
-  func testDefaultModelExposesCreateActionAndTargets() {
+  func testDefaultModelExposesPrimaryActionsAndHighlights() {
     let model = HomeScreenModel.default
 
-    XCTAssertEqual(model.primaryActionTitle, "Create Virtual Machine")
-    XCTAssertEqual(model.secondaryActionTitle, "Open VM Storage")
-    XCTAssertEqual(model.acceptanceTargets.count, 3)
+    XCTAssertEqual(model.primaryActionTitle, "Create VM")
+    XCTAssertEqual(model.secondaryActionTitle, "Open Storage")
+    XCTAssertEqual(model.gettingStartedHighlights.count, 3)
     XCTAssertTrue(
-      model.supportMatrix.contains(where: { $0.contains(BuildInfo.primaryDistribution) }))
-  }
-
-  func testSidebarSectionsStayAnchoredToPhaseZeroShell() {
-    let model = HomeScreenModel.default
-
-    XCTAssertEqual(model.sidebarSections.count, 3)
-    XCTAssertTrue(model.sidebarSections.contains(where: { $0.detail.contains("Phase-0") }))
-    XCTAssertTrue(model.sidebarSections.contains(where: { $0.detail.contains("Single VM") }))
+      model.compatibilityHighlights.contains(where: { $0.contains(BuildInfo.primaryDistribution) }))
   }
 }

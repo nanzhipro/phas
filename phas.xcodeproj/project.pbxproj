@@ -28,6 +28,7 @@
 		7B67F3F4EE2F41C72A2CE9E3 /* phasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777A3B2677F465A912F6C346 /* phasApp.swift */; };
 		7F5ABB4037A594E10EFFC3C3 /* VirtualMachineConfigurationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D898B0E634637CE45AB572 /* VirtualMachineConfigurationFactory.swift */; };
 		7F894FDFEFA05EE3D7F952BB /* VirtualMachineEventLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6E94F6E693BCC5EEF2A6E3 /* VirtualMachineEventLoggerTests.swift */; };
+		8DE28141C615AD82626EE10B /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AFF141F358FDA04297D961 /* L10n.swift */; };
 		9C4977E4CD98BE2A901E60CC /* RuntimePresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C299BB98C6B65430CFC3F6 /* RuntimePresentation.swift */; };
 		AB79E2CC856C3E67D99FB4A3 /* VirtualMachineAdmissionValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2EDCA816D8148E8517C6C /* VirtualMachineAdmissionValidator.swift */; };
 		ABDFAAAFB74E92823EB08589 /* VirtualMachineRecoveryEvaluatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB641F7F8275C79B557B9 /* VirtualMachineRecoveryEvaluatorTests.swift */; };
@@ -69,6 +70,7 @@
 		7ED9C94E0B02398D1C874BDE /* CreateVirtualMachineUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateVirtualMachineUseCase.swift; sourceTree = "<group>"; };
 		7EDA4F7731BE015F8B81B249 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = SOURCE_ROOT; };
 		8039BCA5B055400491D4FFA3 /* VirtualMachineCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineCreation.swift; sourceTree = "<group>"; };
+		90AFF141F358FDA04297D961 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
 		942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenModelTests.swift; sourceTree = "<group>"; };
 		9843A4699CC86494B18EDE8D /* CreateVirtualMachineWizard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateVirtualMachineWizard.swift; sourceTree = "<group>"; };
 		A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRootView.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 		DCC6DACAE9AD554736FF4D0D /* App */ = {
 			isa = PBXGroup;
 			children = (
+				90AFF141F358FDA04297D961 /* L10n.swift */,
 				777A3B2677F465A912F6C346 /* phasApp.swift */,
 			);
 			path = App;
@@ -368,6 +371,7 @@
 				2F07EA270B440100E0F00362 /* HomeRootView.swift in Sources */,
 				D290E8F3E37F43E73CEDEB79 /* HomeScreenModel.swift in Sources */,
 				702B94E1DCDB9C3EBF7ED470 /* HostMachineSnapshotProvider.swift in Sources */,
+				8DE28141C615AD82626EE10B /* L10n.swift in Sources */,
 				4A403C63B30B52FF3ADAF1FD /* MachineIdentifierStore.swift in Sources */,
 				9C4977E4CD98BE2A901E60CC /* RuntimePresentation.swift in Sources */,
 				AB79E2CC856C3E67D99FB4A3 /* VirtualMachineAdmissionValidator.swift in Sources */,

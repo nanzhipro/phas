@@ -7,7 +7,7 @@ enum VirtualMachineLibraryError: LocalizedError {
   var errorDescription: String? {
     switch self {
     case .missingVirtualMachine:
-      return "Create a virtual machine before opening the runtime window or lifecycle controls."
+      return L10n.text("error.library.missingVM", fallback: "Create a virtual machine first.")
     }
   }
 }
@@ -221,7 +221,11 @@ final class VirtualMachineLibrary: ObservableObject {
         refreshRecoveryState(persistChanges: true)
       }
     } catch {
-      activeErrorMessage = "Failed to load VM bundles. \(error.localizedDescription)"
+      activeErrorMessage = L10n.format(
+        "error.library.loadBundles",
+        fallback: "Couldn't load virtual machines. %@",
+        error.localizedDescription
+      )
     }
   }
 
