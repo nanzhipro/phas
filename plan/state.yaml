@@ -6,6 +6,7 @@ completed_phases:
 - phase-2-create-wizard
 - phase-3-virtualization-core
 - phase-4-runtime-ui
+- phase-5-recovery-diagnostics
 completion_log:
 - phase_id: phase-0-app-shell
   completed_at: '2026-04-30T02:09:25Z'
@@ -39,4 +40,10 @@ completion_log:
     tests for button availability plus runtime detail presentation.
   next_focus: Implement recovery flows, diagnostics, and relaunch-aware restoration
     on top of the runtime window and session service.
-updated_at: '2026-04-30T02:44:32Z'
+- phase_id: phase-5-recovery-diagnostics
+  completed_at: '2026-04-30T02:48:50Z'
+  summary: Added relaunch recovery evaluation, diagnostics surfaces, runtime-window
+    restoration gating, and tests for transient-state mapping plus recovery actions.
+  next_focus: Automate the smoke and regression verification matrix for the runtime,
+    recovery, and bundle workflows.
+updated_at: '2026-04-30T02:48:50Z'

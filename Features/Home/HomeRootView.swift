@@ -97,6 +97,9 @@ struct HomeRootView: View {
         } message: {
             Text(library.activeErrorMessage ?? "")
         }
+        .task(id: library.pendingRuntimeWindowRestoration) {
+            restoreRuntimeWindowIfNeeded()
+        }
     }
 
     private var heroCard: some View {
@@ -153,15 +156,21 @@ struct HomeRootView: View {
     }
 
     private func vmOverviewSection(_ record: VirtualMachineRecord) -> some View {
-        HStack(alignment: .top, spacing: 20) {
-            let snapshot = library.runtimeDetailSnapshot(for: record)
-            summaryCard(
-                title: "Current VM",
-                icon: "shippingbox.circle",
-                lines: snapshot.detailLines
-            )
+        VStack(alignment: .leading, spacing: 20) {
+            HStack(alignment: .top, spacing: 20) {
+                let snapshot = library.runtimeDetailSnapshot(for: record)
+                summaryCard(
+                    title: "Current VM",
+                    icon: "shippingbox.circle",
+                    lines: snapshot.detailLines
+                )
 
-            runtimeControlCard(record)
+                runtimeControlCard(record)
+            }
+
+            if let report = library.recoveryReport {
+                recoveryDiagnosticsCard(report)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -217,6 +226,18 @@ struct HomeRootView: View {
     }
 
     private func openRuntimeWindow() {
+        guard library.prepareRuntimeWindow() else {
+            return
+        }
+
+        openWindow(id: phasApp.runtimeWindowID)
+    }
+
+    private func restoreRuntimeWindowIfNeeded() {
+        guard library.consumePendingRuntimeWindowRestoration() else {
+            return
+        }
+
         guard library.prepareRuntimeWindow() else {
             return
         }
@@ -299,6 +320,74 @@ struct HomeRootView: View {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         )
+    }
+
+    private func recoveryDiagnosticsCard(_ report: VirtualMachineRecoveryReport) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Label(report.headline, systemImage: recoveryIcon(for: report.severity))
+                .font(.headline)
+
+            Text(report.summary)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 10) {
+                if report.actions.canRetryStart {
+                    Button("Retry Start") {
+                        Task {
+                            await library.startCurrentVirtualMachine()
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+
+                if report.actions.canRecoverToStopped {
+                    Button("Recover to Stopped") {
+                        library.recoverCurrentVirtualMachineToStopped()
+                    }
+                    .buttonStyle(.bordered)
+                }
+
+                if report.actions.canReloadFromDisk {
+                    Button("Reload State") {
+                        library.reload()
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color(nsColor: .controlBackgroundColor))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(recoveryColor(for: report.severity).opacity(0.24), lineWidth: 1)
+        )
+    }
+
+    private func recoveryIcon(for severity: VirtualMachineRecoverySeverity) -> String {
+        switch severity {
+        case .healthy:
+            return "checkmark.shield"
+        case .warning:
+            return "exclamationmark.triangle"
+        case .error:
+            return "bolt.horizontal.circle"
+        }
+    }
+
+    private func recoveryColor(for severity: VirtualMachineRecoverySeverity) -> Color {
+        switch severity {
+        case .healthy:
+            return .green
+        case .warning:
+            return .orange
+        case .error:
+            return .red
+        }
     }
 }
 

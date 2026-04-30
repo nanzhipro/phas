@@ -21,6 +21,12 @@ struct VirtualMachineRuntimeWindowView: View {
                 .background(Color(nsColor: .windowBackgroundColor))
             }
         }
+        .onAppear {
+            library.noteRuntimeWindowOpened()
+        }
+        .onDisappear {
+            library.noteRuntimeWindowClosed()
+        }
     }
 
     private func machinePane(session: VirtualMachineSession, record: VirtualMachineRecord) -> some View {
@@ -60,6 +66,10 @@ struct VirtualMachineRuntimeWindowView: View {
                         "Phase-5 owns recovery and diagnostics." 
                     ]
                 )
+
+                if let report = library.recoveryReport {
+                    recoveryCard(report)
+                }
 
                 HStack(spacing: 10) {
                     Button("Open VM Storage") {
@@ -158,5 +168,72 @@ struct VirtualMachineRuntimeWindowView: View {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         )
+    }
+
+    private func recoveryCard(_ report: VirtualMachineRecoveryReport) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Label(report.headline, systemImage: recoveryIcon(for: report.severity))
+                .font(.headline)
+
+            Text(report.summary)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 10) {
+                if report.actions.canRetryStart {
+                    Button("Retry Start") {
+                        Task {
+                            await library.startCurrentVirtualMachine()
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+
+                if report.actions.canRecoverToStopped {
+                    Button("Recover to Stopped") {
+                        library.recoverCurrentVirtualMachineToStopped()
+                    }
+                    .buttonStyle(.bordered)
+                }
+
+                if report.actions.canReloadFromDisk {
+                    Button("Reload State") {
+                        library.reload()
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(nsColor: .controlBackgroundColor))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(recoveryColor(for: report.severity).opacity(0.24), lineWidth: 1)
+        )
+    }
+
+    private func recoveryIcon(for severity: VirtualMachineRecoverySeverity) -> String {
+        switch severity {
+        case .healthy:
+            return "checkmark.shield"
+        case .warning:
+            return "exclamationmark.triangle"
+        case .error:
+            return "bolt.horizontal.circle"
+        }
+    }
+
+    private func recoveryColor(for severity: VirtualMachineRecoverySeverity) -> Color {
+        switch severity {
+        case .healthy:
+            return .green
+        case .warning:
+            return .orange
+        case .error:
+            return .red
+        }
     }
 }

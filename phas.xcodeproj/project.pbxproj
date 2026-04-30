@@ -30,11 +30,13 @@
 		7F894FDFEFA05EE3D7F952BB /* VirtualMachineEventLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6E94F6E693BCC5EEF2A6E3 /* VirtualMachineEventLoggerTests.swift */; };
 		9C4977E4CD98BE2A901E60CC /* RuntimePresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C299BB98C6B65430CFC3F6 /* RuntimePresentation.swift */; };
 		AB79E2CC856C3E67D99FB4A3 /* VirtualMachineAdmissionValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2EDCA816D8148E8517C6C /* VirtualMachineAdmissionValidator.swift */; };
+		ABDFAAAFB74E92823EB08589 /* VirtualMachineRecoveryEvaluatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB641F7F8275C79B557B9 /* VirtualMachineRecoveryEvaluatorTests.swift */; };
 		AED922A986F566CD7ABD1CBB /* VirtualMachineBundleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */; };
 		C06A2032187844B65CEF4CD8 /* VirtualMachineLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14B9854B27D6FD2BD208687 /* VirtualMachineLibrary.swift */; };
 		C3FB079DAE5781E0CD685CEA /* VirtualMachineConfigurationFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0D9EC77D8B133116855BC0 /* VirtualMachineConfigurationFactoryTests.swift */; };
 		D290E8F3E37F43E73CEDEB79 /* HomeScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D114C43DAFDD0B7F430EDD4 /* HomeScreenModel.swift */; };
 		D91DE99904FF12BBD0880A03 /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = 7EDA4F7731BE015F8B81B249 /* Resources */; };
+		DB0C8C110CE22CEB375A7A26 /* VirtualMachineRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B7706CC7F9BA7B0FCC39F0 /* VirtualMachineRecovery.swift */; };
 		DEDD3998C609C3A51D0296D8 /* CreateVirtualMachineFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC7F12767619FB2A098EE62 /* CreateVirtualMachineFlowTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,9 +72,11 @@
 		942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenModelTests.swift; sourceTree = "<group>"; };
 		9843A4699CC86494B18EDE8D /* CreateVirtualMachineWizard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateVirtualMachineWizard.swift; sourceTree = "<group>"; };
 		A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRootView.swift; sourceTree = "<group>"; };
+		ABAFB641F7F8275C79B557B9 /* VirtualMachineRecoveryEvaluatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineRecoveryEvaluatorTests.swift; sourceTree = "<group>"; };
 		AF0340105608C8C7870BD935 /* HostMachineSnapshotProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostMachineSnapshotProvider.swift; sourceTree = "<group>"; };
 		AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineBundleStore.swift; sourceTree = "<group>"; };
 		B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineRecord.swift; sourceTree = "<group>"; };
+		C7B7706CC7F9BA7B0FCC39F0 /* VirtualMachineRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineRecovery.swift; sourceTree = "<group>"; };
 		CF1DD1992FAA1D82F676ADED /* VirtualMachineEventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineEventLogger.swift; sourceTree = "<group>"; };
 		D14B9854B27D6FD2BD208687 /* VirtualMachineLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineLibrary.swift; sourceTree = "<group>"; };
 		D210BBF72342FA55F0329380 /* EFIVariableStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EFIVariableStoreManager.swift; sourceTree = "<group>"; };
@@ -97,6 +101,7 @@
 				8039BCA5B055400491D4FFA3 /* VirtualMachineCreation.swift */,
 				561D35875907538FBAE2F31A /* VirtualMachineLifecycle.swift */,
 				B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */,
+				C7B7706CC7F9BA7B0FCC39F0 /* VirtualMachineRecovery.swift */,
 			);
 			path = VirtualMachine;
 			sourceTree = "<group>";
@@ -236,6 +241,7 @@
 				FB0D9EC77D8B133116855BC0 /* VirtualMachineConfigurationFactoryTests.swift */,
 				0E6E94F6E693BCC5EEF2A6E3 /* VirtualMachineEventLoggerTests.swift */,
 				7D5590AF1E22150DE8279265 /* VirtualMachineLifecycleControllerTests.swift */,
+				ABAFB641F7F8275C79B557B9 /* VirtualMachineRecoveryEvaluatorTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -347,6 +353,7 @@
 				C3FB079DAE5781E0CD685CEA /* VirtualMachineConfigurationFactoryTests.swift in Sources */,
 				7F894FDFEFA05EE3D7F952BB /* VirtualMachineEventLoggerTests.swift in Sources */,
 				585B280F6F37C510881809DE /* VirtualMachineLifecycleControllerTests.swift in Sources */,
+				ABDFAAAFB74E92823EB08589 /* VirtualMachineRecoveryEvaluatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +378,7 @@
 				C06A2032187844B65CEF4CD8 /* VirtualMachineLibrary.swift in Sources */,
 				2F172A3BD0749D30CDCD526C /* VirtualMachineLifecycle.swift in Sources */,
 				4EB2DC55170D1711A88A695D /* VirtualMachineRecord.swift in Sources */,
+				DB0C8C110CE22CEB375A7A26 /* VirtualMachineRecovery.swift in Sources */,
 				3C6E72EC86858976AE1A0378 /* VirtualMachineRuntimeWindowView.swift in Sources */,
 				6BDAF8D5B4A1ABBD82B83D6E /* VirtualMachineSession.swift in Sources */,
 				18168D9B474F89A0CFD47A0E /* VirtualMachineViewContainer.swift in Sources */,
