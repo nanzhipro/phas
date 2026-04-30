@@ -1,0 +1,220 @@
+version: 1
+project: phas
+kind: phas-local-linux-vm-plan-manifest
+entrypoints:
+  overview: PRD.md
+  common: plan/common.md
+  workflow: plan/workflow.md
+  handoff: plan/handoff.md
+execution_rule:
+  description: >-
+    执行任一 Phase 时，必须同时携带完整通用上下文和当前 Phase 文档。
+    execution 文档负责显式声明这次执行的输入、边界、交付物和完成标准。
+  resolver: scripts/planctl
+  state_file: plan/state.yaml
+  handoff_file: plan/handoff.md
+  repo_instructions:
+    - .github/copilot-instructions.md
+    - CLAUDE.md
+    - AGENTS.md
+  continuous_execution:
+    next_command: ruby scripts/planctl advance --strict
+    completion_command: >-
+      ruby scripts/planctl complete <phase-id> --summary "<summary>" --next-focus "<next-focus>" --continue
+  continuation:
+    mode: autonomous
+    stop_only_on:
+      - dependency_missing
+      - missing_context
+      - required_gate_failed
+      - git_conflict
+      - destructive_operation_required
+      - all_phases_completed
+    non_stop_actions:
+      - phase_completed
+      - next_phase_ready
+      - placeholder_contract_promotion
+      - optional_check_failed
+      - no_remote_configured
+  enforcement:
+    dependency_check: true
+    stop_on_missing_context: true
+    require_execution_file: true
+  enforce_allowed_paths: false
+  compression_control:
+    enabled: true
+    max_completion_history: 3
+    resume_read_order:
+      - plan/manifest.yaml
+      - plan/handoff.md
+      - next.phase.required_context
+    rules:
+      - 永远不要一次性加载所有 phase 文档。
+      - 只在当前 phase 读取 plan/common.md、当前 phase plan 和当前 phase execution。
+      - 每完成一个 phase 后更新 handoff，再进入下一 phase。
+  read_order:
+    - plan/common.md
+    - phase.plan_file
+    - phase.execution_file
+  required_context:
+    - plan/common.md
+phases:
+  - id: phase-0-app-shell
+    title: bootstrap native app shell and build pipeline
+    plan_file: plan/phases/phase-0-app-shell.md
+    execution_file: plan/execution/phase-0-app-shell.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-0-app-shell.md
+      - plan/execution/phase-0-app-shell.md
+    depends_on: []
+    allowed_paths:
+      - README.md
+      - .gitignore
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Resources/**
+      - Tests/**
+      - docs/**
+      - phas.entitlements
+      - phas.xcodeproj/**
+      - project.yml
+      - Package.swift
+  - id: phase-1-vm-domain
+    title: establish VM domain model and bundle persistence
+    plan_file: plan/phases/phase-1-vm-domain.md
+    execution_file: plan/execution/phase-1-vm-domain.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-1-vm-domain.md
+      - plan/execution/phase-1-vm-domain.md
+    depends_on:
+      - phase-0-app-shell
+    allowed_paths:
+      - Domain/**
+      - Infrastructure/**
+      - Tests/**
+      - docs/**
+      - README.md
+      - .gitignore
+  - id: phase-2-create-wizard
+    title: implement VM creation wizard and admission gates
+    plan_file: plan/phases/phase-2-create-wizard.md
+    execution_file: plan/execution/phase-2-create-wizard.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-2-create-wizard.md
+      - plan/execution/phase-2-create-wizard.md
+    depends_on:
+      - phase-1-vm-domain
+    allowed_paths:
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Tests/**
+      - docs/**
+      - README.md
+      - .gitignore
+  - id: phase-3-virtualization-core
+    title: implement virtualization configuration and install boot path
+    plan_file: plan/phases/phase-3-virtualization-core.md
+    execution_file: plan/execution/phase-3-virtualization-core.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-3-virtualization-core.md
+      - plan/execution/phase-3-virtualization-core.md
+    depends_on:
+      - phase-2-create-wizard
+    allowed_paths:
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Tests/**
+      - docs/**
+      - README.md
+      - .gitignore
+  - id: phase-4-runtime-ui
+    title: deliver runtime window, detail view, and lifecycle controls
+    plan_file: plan/phases/phase-4-runtime-ui.md
+    execution_file: plan/execution/phase-4-runtime-ui.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-4-runtime-ui.md
+      - plan/execution/phase-4-runtime-ui.md
+    depends_on:
+      - phase-3-virtualization-core
+    allowed_paths:
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Resources/**
+      - Tests/**
+      - docs/**
+      - README.md
+      - .gitignore
+  - id: phase-5-recovery-diagnostics
+    title: add recovery flows, diagnostics, and app relaunch restoration
+    plan_file: plan/phases/phase-5-recovery-diagnostics.md
+    execution_file: plan/execution/phase-5-recovery-diagnostics.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-5-recovery-diagnostics.md
+      - plan/execution/phase-5-recovery-diagnostics.md
+    depends_on:
+      - phase-4-runtime-ui
+    allowed_paths:
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Resources/**
+      - Tests/**
+      - docs/**
+      - README.md
+      - .gitignore
+  - id: phase-6-verification-matrix
+    title: automate smoke and regression verification matrix
+    plan_file: plan/phases/phase-6-verification-matrix.md
+    execution_file: plan/execution/phase-6-verification-matrix.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-6-verification-matrix.md
+      - plan/execution/phase-6-verification-matrix.md
+    depends_on:
+      - phase-5-recovery-diagnostics
+    allowed_paths:
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Resources/**
+      - Tests/**
+      - docs/**
+      - scripts/**
+      - README.md
+      - .gitignore
+  - id: phase-7-release-readiness
+    title: finalize release surface, operator docs, and acceptance ledger
+    plan_file: plan/phases/phase-7-release-readiness.md
+    execution_file: plan/execution/phase-7-release-readiness.md
+    required_context:
+      - plan/common.md
+      - plan/phases/phase-7-release-readiness.md
+      - plan/execution/phase-7-release-readiness.md
+    depends_on:
+      - phase-6-verification-matrix
+    allowed_paths:
+      - App/**
+      - Features/**
+      - Domain/**
+      - Infrastructure/**
+      - Resources/**
+      - Tests/**
+      - docs/**
+      - README.md
+      - .gitignore

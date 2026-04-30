@@ -1,0 +1,60 @@
+name: phas
+options:
+  xcodeVersion: 15.4
+  minimumXcodeGenVersion: 2.44.1
+  postGenCommand: >-
+    ruby -e "path = 'phas.xcodeproj/project.pbxproj'; text = File.read(path);
+    text.gsub!('objectVersion = 77;', 'objectVersion = 60;');
+    text.gsub!('preferredProjectObjectVersion = 77;', 'preferredProjectObjectVersion = 60;');
+    File.write(path, text)"
+  deploymentTarget:
+    macOS: 14.0
+settings:
+  base:
+    SWIFT_VERSION: 5.10
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
+    CODE_SIGN_ENTITLEMENTS: phas.entitlements
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_CFBundleDisplayName: phas
+    INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+    INFOPLIST_KEY_NSHumanReadableCopyright: Copyright 2026 nanzhipro.
+    MACOSX_DEPLOYMENT_TARGET: 14.0
+    ENABLE_HARDENED_RUNTIME: NO
+targets:
+  phas:
+    type: application
+    platform: macOS
+    deploymentTarget: 14.0
+    sources:
+      - path: App
+      - path: Features
+      - path: Domain
+        optional: true
+      - path: Infrastructure
+      - path: Resources
+        type: folder
+    entitlements:
+      path: phas.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nanzhipro.phas
+        PRODUCT_NAME: phas
+        CODE_SIGN_ENTITLEMENTS: phas.entitlements
+        ENABLE_APP_SANDBOX: NO
+    scheme:
+      gatherCoverageData: false
+      testTargets:
+        - phasTests
+  phasTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: 14.0
+    sources:
+      - path: Tests
+    dependencies:
+      - target: phas
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.nanzhipro.phasTests

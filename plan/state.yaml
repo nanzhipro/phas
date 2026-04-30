@@ -1,0 +1,13 @@
+---
+version: 1
+completed_phases:
+- phase-0-app-shell
+completion_log:
+- phase_id: phase-0-app-shell
+  completed_at: '2026-04-30T02:09:25Z'
+  summary: Bootstrapped the native macOS app shell with a generated Xcode project,
+    virtualization entitlement, SwiftUI empty state, and a reproducible build/test
+    path.
+  next_focus: Promote phase-1 contracts and implement the VM domain model, bundle
+    metadata, and persistent storage scaffolding.
+updated_at: '2026-04-30T02:09:25Z'
