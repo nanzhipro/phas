@@ -6,25 +6,27 @@
 
 - State file: `plan/state.yaml`
 - Handoff file: `plan/handoff.md`
-- Updated at: `2026-04-30T02:09:25Z`
-- Completed phases: `phase-0-app-shell`
+- Updated at: `2026-04-30T02:14:32Z`
+- Completed phases: `phase-0-app-shell, phase-1-vm-domain`
 
 ## 最近完成
 
 - `phase-0-app-shell` bootstrap native app shell and build pipeline: Bootstrapped the native macOS app shell with a generated Xcode project, virtualization entitlement, SwiftUI empty state, and a reproducible build/test path.
 - next focus: Promote phase-1 contracts and implement the VM domain model, bundle metadata, and persistent storage scaffolding.
+- `phase-1-vm-domain` establish VM domain model and bundle persistence: Added VM domain record types, bundle layout persistence, machine identifier storage, sparse disk bootstrap, and unit tests for config round-trips plus delete guards.
+- next focus: Promote the phase-2 contract and implement the VM creation wizard with admission validation on top of the new bundle persistence layer.
 
 ## 下一 Phase
 
-- `phase-1-vm-domain` establish VM domain model and bundle persistence
-- plan: `plan/phases/phase-1-vm-domain.md`
-- execution: `plan/execution/phase-1-vm-domain.md`
-- status: `placeholder contracts need upgrade first (plan/phases/phase-1-vm-domain.md, plan/execution/phase-1-vm-domain.md)`
+- `phase-2-create-wizard` implement VM creation wizard and admission gates
+- plan: `plan/phases/phase-2-create-wizard.md`
+- execution: `plan/execution/phase-2-create-wizard.md`
+- status: `placeholder contracts need upgrade first (plan/phases/phase-2-create-wizard.md, plan/execution/phase-2-create-wizard.md)`
 
 下一步读取顺序：
 1. `plan/common.md`
-2. `plan/phases/phase-1-vm-domain.md`
-3. `plan/execution/phase-1-vm-domain.md`
+2. `plan/phases/phase-2-create-wizard.md`
+3. `plan/execution/phase-2-create-wizard.md`
 
 ## 压缩恢复顺序
 

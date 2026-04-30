@@ -2,6 +2,7 @@
 version: 1
 completed_phases:
 - phase-0-app-shell
+- phase-1-vm-domain
 completion_log:
 - phase_id: phase-0-app-shell
   completed_at: '2026-04-30T02:09:25Z'
@@ -10,4 +11,11 @@ completion_log:
     path.
   next_focus: Promote phase-1 contracts and implement the VM domain model, bundle
     metadata, and persistent storage scaffolding.
-updated_at: '2026-04-30T02:09:25Z'
+- phase_id: phase-1-vm-domain
+  completed_at: '2026-04-30T02:14:32Z'
+  summary: Added VM domain record types, bundle layout persistence, machine identifier
+    storage, sparse disk bootstrap, and unit tests for config round-trips plus delete
+    guards.
+  next_focus: Promote the phase-2 contract and implement the VM creation wizard with
+    admission validation on top of the new bundle persistence layer.
+updated_at: '2026-04-30T02:14:32Z'

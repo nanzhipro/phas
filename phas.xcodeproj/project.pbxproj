@@ -10,7 +10,11 @@
 		1CF0FC8C692EF9CEC27067AB /* BuildInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1F5CA3E09733E76FF7F764 /* BuildInfo.swift */; };
 		2F07EA270B440100E0F00362 /* HomeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */; };
 		3144A863C097EB35B9549CF9 /* HomeScreenModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */; };
+		4A403C63B30B52FF3ADAF1FD /* MachineIdentifierStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77014096F0C9433AB5A9D73 /* MachineIdentifierStore.swift */; };
+		4EB2DC55170D1711A88A695D /* VirtualMachineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */; };
+		5FE570C288711F00F30044F2 /* VirtualMachineBundleStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1312F39475E9D0590FBD4CF1 /* VirtualMachineBundleStoreTests.swift */; };
 		7B67F3F4EE2F41C72A2CE9E3 /* phasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777A3B2677F465A912F6C346 /* phasApp.swift */; };
+		AED922A986F566CD7ABD1CBB /* VirtualMachineBundleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */; };
 		D290E8F3E37F43E73CEDEB79 /* HomeScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D114C43DAFDD0B7F430EDD4 /* HomeScreenModel.swift */; };
 		D91DE99904FF12BBD0880A03 /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = 7EDA4F7731BE015F8B81B249 /* Resources */; };
 /* End PBXBuildFile section */
@@ -26,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1312F39475E9D0590FBD4CF1 /* VirtualMachineBundleStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineBundleStoreTests.swift; sourceTree = "<group>"; };
 		3D114C43DAFDD0B7F430EDD4 /* HomeScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenModel.swift; sourceTree = "<group>"; };
 		465F9612E6F39AF75F2F40BB /* phas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = phas.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47BD6054D0C79FE6BF566CD2 /* phasTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = phasTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -34,9 +39,20 @@
 		7EDA4F7731BE015F8B81B249 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = SOURCE_ROOT; };
 		942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenModelTests.swift; sourceTree = "<group>"; };
 		A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRootView.swift; sourceTree = "<group>"; };
+		AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineBundleStore.swift; sourceTree = "<group>"; };
+		B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineRecord.swift; sourceTree = "<group>"; };
+		F77014096F0C9433AB5A9D73 /* MachineIdentifierStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MachineIdentifierStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		21AD2BD5ECF8ACE0B859DEC0 /* VirtualMachine */ = {
+			isa = PBXGroup;
+			children = (
+				B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */,
+			);
+			path = VirtualMachine;
+			sourceTree = "<group>";
+		};
 		50DDB13418FF8A23F651589F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -54,9 +70,19 @@
 			path = Features;
 			sourceTree = "<group>";
 		};
+		81BF3DCAED72895F2FE12A8A /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				F77014096F0C9433AB5A9D73 /* MachineIdentifierStore.swift */,
+				AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		AB1B1C0B4D63A4854703DE8D /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				81BF3DCAED72895F2FE12A8A /* Persistence */,
 				EF1BA47347FB95CDE8399D16 /* Support */,
 			);
 			path = Infrastructure;
@@ -69,6 +95,14 @@
 				3D114C43DAFDD0B7F430EDD4 /* HomeScreenModel.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		CECC8559011F342DECAC3AE0 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				21AD2BD5ECF8ACE0B859DEC0 /* VirtualMachine */,
+			);
+			path = Domain;
 			sourceTree = "<group>";
 		};
 		DCC6DACAE9AD554736FF4D0D /* App */ = {
@@ -92,6 +126,7 @@
 			children = (
 				7EDA4F7731BE015F8B81B249 /* Resources */,
 				DCC6DACAE9AD554736FF4D0D /* App */,
+				CECC8559011F342DECAC3AE0 /* Domain */,
 				778A95B15CBB1DC56AFA4B48 /* Features */,
 				AB1B1C0B4D63A4854703DE8D /* Infrastructure */,
 				F3418B2B6B7BF32751414536 /* Tests */,
@@ -103,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */,
+				1312F39475E9D0590FBD4CF1 /* VirtualMachineBundleStoreTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -192,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3144A863C097EB35B9549CF9 /* HomeScreenModelTests.swift in Sources */,
+				5FE570C288711F00F30044F2 /* VirtualMachineBundleStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +239,9 @@
 				1CF0FC8C692EF9CEC27067AB /* BuildInfo.swift in Sources */,
 				2F07EA270B440100E0F00362 /* HomeRootView.swift in Sources */,
 				D290E8F3E37F43E73CEDEB79 /* HomeScreenModel.swift in Sources */,
+				4A403C63B30B52FF3ADAF1FD /* MachineIdentifierStore.swift in Sources */,
+				AED922A986F566CD7ABD1CBB /* VirtualMachineBundleStore.swift in Sources */,
+				4EB2DC55170D1711A88A695D /* VirtualMachineRecord.swift in Sources */,
 				7B67F3F4EE2F41C72A2CE9E3 /* phasApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
