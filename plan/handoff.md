@@ -6,8 +6,8 @@
 
 - State file: `plan/state.yaml`
 - Handoff file: `plan/handoff.md`
-- Updated at: `2026-04-30T02:14:32Z`
-- Completed phases: `phase-0-app-shell, phase-1-vm-domain`
+- Updated at: `2026-04-30T02:22:27Z`
+- Completed phases: `phase-0-app-shell, phase-1-vm-domain, phase-2-create-wizard`
 
 ## 最近完成
 
@@ -15,18 +15,20 @@
 - next focus: Promote phase-1 contracts and implement the VM domain model, bundle metadata, and persistent storage scaffolding.
 - `phase-1-vm-domain` establish VM domain model and bundle persistence: Added VM domain record types, bundle layout persistence, machine identifier storage, sparse disk bootstrap, and unit tests for config round-trips plus delete guards.
 - next focus: Promote the phase-2 contract and implement the VM creation wizard with admission validation on top of the new bundle persistence layer.
+- `phase-2-create-wizard` implement VM creation wizard and admission gates: Added a single-VM creation wizard, host capability snapshot, admission validator, draft bundle creation flow, and tests for blocking versus warning gating.
+- next focus: Promote the phase-3 contract and wire Draft VM records into Virtualization.framework configuration, install-media boot, and runtime launch orchestration.
 
 ## 下一 Phase
 
-- `phase-2-create-wizard` implement VM creation wizard and admission gates
-- plan: `plan/phases/phase-2-create-wizard.md`
-- execution: `plan/execution/phase-2-create-wizard.md`
-- status: `placeholder contracts need upgrade first (plan/phases/phase-2-create-wizard.md, plan/execution/phase-2-create-wizard.md)`
+- `phase-3-virtualization-core` implement virtualization configuration and install boot path
+- plan: `plan/phases/phase-3-virtualization-core.md`
+- execution: `plan/execution/phase-3-virtualization-core.md`
+- status: `placeholder contracts need upgrade first (plan/phases/phase-3-virtualization-core.md, plan/execution/phase-3-virtualization-core.md)`
 
 下一步读取顺序：
 1. `plan/common.md`
-2. `plan/phases/phase-2-create-wizard.md`
-3. `plan/execution/phase-2-create-wizard.md`
+2. `plan/phases/phase-3-virtualization-core.md`
+3. `plan/execution/phase-3-virtualization-core.md`
 
 ## 压缩恢复顺序
 

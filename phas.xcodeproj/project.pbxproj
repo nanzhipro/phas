@@ -10,13 +10,20 @@
 		1CF0FC8C692EF9CEC27067AB /* BuildInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1F5CA3E09733E76FF7F764 /* BuildInfo.swift */; };
 		2F07EA270B440100E0F00362 /* HomeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */; };
 		3144A863C097EB35B9549CF9 /* HomeScreenModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */; };
+		3B1B7F9AB46E3EEB288E1E01 /* VirtualMachineCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8039BCA5B055400491D4FFA3 /* VirtualMachineCreation.swift */; };
+		4490AB57DA8060A5CC6C8DF3 /* CreateVirtualMachineUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED9C94E0B02398D1C874BDE /* CreateVirtualMachineUseCase.swift */; };
 		4A403C63B30B52FF3ADAF1FD /* MachineIdentifierStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77014096F0C9433AB5A9D73 /* MachineIdentifierStore.swift */; };
 		4EB2DC55170D1711A88A695D /* VirtualMachineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */; };
+		5233DED88CAFD52EC6715B9B /* CreateVirtualMachineWizard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9843A4699CC86494B18EDE8D /* CreateVirtualMachineWizard.swift */; };
 		5FE570C288711F00F30044F2 /* VirtualMachineBundleStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1312F39475E9D0590FBD4CF1 /* VirtualMachineBundleStoreTests.swift */; };
+		702B94E1DCDB9C3EBF7ED470 /* HostMachineSnapshotProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0340105608C8C7870BD935 /* HostMachineSnapshotProvider.swift */; };
 		7B67F3F4EE2F41C72A2CE9E3 /* phasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777A3B2677F465A912F6C346 /* phasApp.swift */; };
+		AB79E2CC856C3E67D99FB4A3 /* VirtualMachineAdmissionValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2EDCA816D8148E8517C6C /* VirtualMachineAdmissionValidator.swift */; };
 		AED922A986F566CD7ABD1CBB /* VirtualMachineBundleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */; };
+		C06A2032187844B65CEF4CD8 /* VirtualMachineLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14B9854B27D6FD2BD208687 /* VirtualMachineLibrary.swift */; };
 		D290E8F3E37F43E73CEDEB79 /* HomeScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D114C43DAFDD0B7F430EDD4 /* HomeScreenModel.swift */; };
 		D91DE99904FF12BBD0880A03 /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = 7EDA4F7731BE015F8B81B249 /* Resources */; };
+		DEDD3998C609C3A51D0296D8 /* CreateVirtualMachineFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC7F12767619FB2A098EE62 /* CreateVirtualMachineFlowTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,22 +42,46 @@
 		465F9612E6F39AF75F2F40BB /* phas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = phas.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47BD6054D0C79FE6BF566CD2 /* phasTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = phasTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A1F5CA3E09733E76FF7F764 /* BuildInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildInfo.swift; sourceTree = "<group>"; };
+		6BC7F12767619FB2A098EE62 /* CreateVirtualMachineFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateVirtualMachineFlowTests.swift; sourceTree = "<group>"; };
 		777A3B2677F465A912F6C346 /* phasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = phasApp.swift; sourceTree = "<group>"; };
+		7ED9C94E0B02398D1C874BDE /* CreateVirtualMachineUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateVirtualMachineUseCase.swift; sourceTree = "<group>"; };
 		7EDA4F7731BE015F8B81B249 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = SOURCE_ROOT; };
+		8039BCA5B055400491D4FFA3 /* VirtualMachineCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineCreation.swift; sourceTree = "<group>"; };
 		942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenModelTests.swift; sourceTree = "<group>"; };
+		9843A4699CC86494B18EDE8D /* CreateVirtualMachineWizard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateVirtualMachineWizard.swift; sourceTree = "<group>"; };
 		A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRootView.swift; sourceTree = "<group>"; };
+		AF0340105608C8C7870BD935 /* HostMachineSnapshotProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostMachineSnapshotProvider.swift; sourceTree = "<group>"; };
 		AFA53DA16193A8633F87E27D /* VirtualMachineBundleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineBundleStore.swift; sourceTree = "<group>"; };
 		B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineRecord.swift; sourceTree = "<group>"; };
+		D14B9854B27D6FD2BD208687 /* VirtualMachineLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineLibrary.swift; sourceTree = "<group>"; };
+		DEE2EDCA816D8148E8517C6C /* VirtualMachineAdmissionValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineAdmissionValidator.swift; sourceTree = "<group>"; };
 		F77014096F0C9433AB5A9D73 /* MachineIdentifierStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MachineIdentifierStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		001452277236728E14593FC9 /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				7ED9C94E0B02398D1C874BDE /* CreateVirtualMachineUseCase.swift */,
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
 		21AD2BD5ECF8ACE0B859DEC0 /* VirtualMachine */ = {
 			isa = PBXGroup;
 			children = (
+				8039BCA5B055400491D4FFA3 /* VirtualMachineCreation.swift */,
 				B0AF8F2012E1958FEC4FEC72 /* VirtualMachineRecord.swift */,
 			);
 			path = VirtualMachine;
+			sourceTree = "<group>";
+		};
+		398F1D154CDDCDC8E60F83FC /* CreateWizard */ = {
+			isa = PBXGroup;
+			children = (
+				9843A4699CC86494B18EDE8D /* CreateVirtualMachineWizard.swift */,
+			);
+			path = CreateWizard;
 			sourceTree = "<group>";
 		};
 		50DDB13418FF8A23F651589F /* Products */ = {
@@ -65,6 +96,7 @@
 		778A95B15CBB1DC56AFA4B48 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				398F1D154CDDCDC8E60F83FC /* CreateWizard */,
 				CD24746DA85D028F1238E430 /* Home */,
 			);
 			path = Features;
@@ -84,6 +116,9 @@
 			children = (
 				81BF3DCAED72895F2FE12A8A /* Persistence */,
 				EF1BA47347FB95CDE8399D16 /* Support */,
+				F9403A8F9AEE8E00703A137A /* System */,
+				001452277236728E14593FC9 /* UseCases */,
+				FE9AA4B565979B8479189777 /* Validation */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -93,6 +128,7 @@
 			children = (
 				A9A536379FE2E3DC92EB7FCC /* HomeRootView.swift */,
 				3D114C43DAFDD0B7F430EDD4 /* HomeScreenModel.swift */,
+				D14B9854B27D6FD2BD208687 /* VirtualMachineLibrary.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -137,10 +173,27 @@
 		F3418B2B6B7BF32751414536 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				6BC7F12767619FB2A098EE62 /* CreateVirtualMachineFlowTests.swift */,
 				942E778E75FFF7ED7201DB2E /* HomeScreenModelTests.swift */,
 				1312F39475E9D0590FBD4CF1 /* VirtualMachineBundleStoreTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		F9403A8F9AEE8E00703A137A /* System */ = {
+			isa = PBXGroup;
+			children = (
+				AF0340105608C8C7870BD935 /* HostMachineSnapshotProvider.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		FE9AA4B565979B8479189777 /* Validation */ = {
+			isa = PBXGroup;
+			children = (
+				DEE2EDCA816D8148E8517C6C /* VirtualMachineAdmissionValidator.swift */,
+			);
+			path = Validation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,6 +280,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEDD3998C609C3A51D0296D8 /* CreateVirtualMachineFlowTests.swift in Sources */,
 				3144A863C097EB35B9549CF9 /* HomeScreenModelTests.swift in Sources */,
 				5FE570C288711F00F30044F2 /* VirtualMachineBundleStoreTests.swift in Sources */,
 			);
@@ -237,10 +291,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CF0FC8C692EF9CEC27067AB /* BuildInfo.swift in Sources */,
+				4490AB57DA8060A5CC6C8DF3 /* CreateVirtualMachineUseCase.swift in Sources */,
+				5233DED88CAFD52EC6715B9B /* CreateVirtualMachineWizard.swift in Sources */,
 				2F07EA270B440100E0F00362 /* HomeRootView.swift in Sources */,
 				D290E8F3E37F43E73CEDEB79 /* HomeScreenModel.swift in Sources */,
+				702B94E1DCDB9C3EBF7ED470 /* HostMachineSnapshotProvider.swift in Sources */,
 				4A403C63B30B52FF3ADAF1FD /* MachineIdentifierStore.swift in Sources */,
+				AB79E2CC856C3E67D99FB4A3 /* VirtualMachineAdmissionValidator.swift in Sources */,
 				AED922A986F566CD7ABD1CBB /* VirtualMachineBundleStore.swift in Sources */,
+				3B1B7F9AB46E3EEB288E1E01 /* VirtualMachineCreation.swift in Sources */,
+				C06A2032187844B65CEF4CD8 /* VirtualMachineLibrary.swift in Sources */,
 				4EB2DC55170D1711A88A695D /* VirtualMachineRecord.swift in Sources */,
 				7B67F3F4EE2F41C72A2CE9E3 /* phasApp.swift in Sources */,
 			);

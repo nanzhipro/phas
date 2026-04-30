@@ -23,7 +23,7 @@ extension HomeScreenModel {
         subtitle: "A single-VM Apple Virtualization MVP for Apple silicon Macs.",
         emptyStateMessage: "No virtual machines exist yet. This phase establishes the native app shell, build pipeline, entitlement wiring, and the placeholder surface where VM creation, lifecycle control, and diagnostics will land in later phases.",
         primaryActionTitle: "Create Virtual Machine",
-        secondaryActionTitle: "Open Build Notes",
+        secondaryActionTitle: "Open VM Storage",
         sidebarSections: [
             SidebarSection(
                 title: "Current Focus",

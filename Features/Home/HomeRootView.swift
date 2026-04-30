@@ -1,19 +1,41 @@
+import AppKit
 import SwiftUI
 
 struct HomeRootView: View {
     let model: HomeScreenModel
+    @ObservedObject var library: VirtualMachineLibrary
 
     var body: some View {
         NavigationSplitView {
-            List(model.sidebarSections, id: \.title) { section in
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(section.title)
-                        .font(.headline)
-                    Text(section.detail)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+            List {
+                if let record = library.currentRecord {
+                    Section("Virtual Machine") {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(record.name)
+                                .font(.headline)
+                            Text(record.stateDisplayName)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text(record.resourceSummary)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
-                .padding(.vertical, 4)
+
+                Section("Project") {
+                    ForEach(model.sidebarSections, id: \.title) { section in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(section.title)
+                                .font(.headline)
+                            Text(section.detail)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
             }
             .navigationTitle("phas")
             .frame(minWidth: 280)
@@ -21,22 +43,32 @@ struct HomeRootView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     heroCard
-                    HStack(alignment: .top, spacing: 20) {
-                        summaryCard(
-                            title: "Acceptance Target",
-                            icon: "checkmark.seal",
-                            lines: model.acceptanceTargets
-                        )
-                        summaryCard(
-                            title: "Support Matrix",
-                            icon: "cpu",
-                            lines: model.supportMatrix
-                        )
+                    if let record = library.currentRecord {
+                        vmSummaryCard(record)
+                    } else {
+                        HStack(alignment: .top, spacing: 20) {
+                            summaryCard(
+                                title: "Acceptance Target",
+                                icon: "checkmark.seal",
+                                lines: model.acceptanceTargets
+                            )
+                            summaryCard(
+                                title: "Support Matrix",
+                                icon: "cpu",
+                                lines: model.supportMatrix
+                            )
+                        }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
 
                     summaryCard(
-                        title: "Phase-0 Deliverables",
+                        title: "Host Summary",
+                        icon: "desktopcomputer",
+                        lines: hostSummaryLines
+                    )
+
+                    summaryCard(
+                        title: "Implementation Trail",
                         icon: "shippingbox",
                         lines: model.phaseZeroDeliverables
                     )
@@ -45,6 +77,23 @@ struct HomeRootView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .background(Color(nsColor: .windowBackgroundColor))
+        }
+        .sheet(isPresented: $library.isPresentingCreateWizard) {
+            CreateVirtualMachineWizard(library: library)
+        }
+        .alert("Unable to Continue", isPresented: Binding(
+            get: { library.activeErrorMessage != nil },
+            set: { newValue in
+                if !newValue {
+                    library.clearError()
+                }
+            }
+        )) {
+            Button("OK", role: .cancel) {
+                library.clearError()
+            }
+        } message: {
+            Text(library.activeErrorMessage ?? "")
         }
     }
 
@@ -56,15 +105,18 @@ struct HomeRootView: View {
                 .font(.title3)
                 .foregroundStyle(.secondary)
             Divider()
-            Text(model.emptyStateMessage)
+            Text(heroMessage)
                 .font(.body)
                 .foregroundStyle(.primary)
             HStack(spacing: 12) {
                 Button(model.primaryActionTitle) {
+                    library.presentCreateWizard()
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(!library.canCreateVirtualMachine)
 
                 Button(model.secondaryActionTitle) {
+                    openVMStorageFolder()
                 }
                 .buttonStyle(.bordered)
             }
@@ -87,6 +139,19 @@ struct HomeRootView: View {
         .overlay(
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+        )
+    }
+
+    private func vmSummaryCard(_ record: VirtualMachineRecord) -> some View {
+        summaryCard(
+            title: "Current VM",
+            icon: "shippingbox.circle",
+            lines: [
+                "State: \(record.stateDisplayName)",
+                "Resources: \(record.resourceSummary)",
+                "Install image: \(record.installImagePath ?? "Not set")",
+                "Bundle: \(library.bundleLocation(for: record).path)"
+            ]
         )
     }
 
@@ -116,9 +181,32 @@ struct HomeRootView: View {
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         )
     }
+
+    private var heroMessage: String {
+        if library.currentRecord == nil {
+            return model.emptyStateMessage
+        }
+
+        return "A single draft VM already exists. The MVP stays intentionally single-VM, so creation is now blocked until delete support lands in a later phase."
+    }
+
+    private var hostSummaryLines: [String] {
+        let snapshot = library.hostSnapshot
+        return [
+            "Host architecture: \(snapshot.architecture.displayString).",
+            "Host system: \(snapshot.operatingSystemVersion.displayString).",
+            "Host memory: \(snapshot.totalMemoryGiB) GiB total, \(snapshot.maximumSafeMemoryMiB / 1024) GiB safe ceiling for the VM.",
+            "Host CPU: \(snapshot.activeCPUCount) active cores, up to \(snapshot.maximumSafeCPUCount) vCPU safe for the VM.",
+            "Recommended preset: \(snapshot.recommendedPreset.subtitle)."
+        ]
+    }
+
+    private func openVMStorageFolder() {
+        NSWorkspace.shared.open(library.bundleRootURL)
+    }
 }
 
 #Preview {
-    HomeRootView(model: .default)
+    HomeRootView(model: .default, library: VirtualMachineLibrary())
         .frame(width: 1200, height: 800)
 }

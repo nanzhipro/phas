@@ -6,7 +6,7 @@ final class HomeScreenModelTests: XCTestCase {
         let model = HomeScreenModel.default
 
         XCTAssertEqual(model.primaryActionTitle, "Create Virtual Machine")
-        XCTAssertEqual(model.secondaryActionTitle, "Open Build Notes")
+        XCTAssertEqual(model.secondaryActionTitle, "Open VM Storage")
         XCTAssertEqual(model.acceptanceTargets.count, 3)
         XCTAssertTrue(model.supportMatrix.contains(where: { $0.contains(BuildInfo.primaryDistribution) }))
     }

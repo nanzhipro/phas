@@ -1,7 +1,11 @@
 import Foundation
 
-struct VirtualMachineID: RawRepresentable, Hashable, Codable, Sendable {
+struct VirtualMachineID: RawRepresentable, Hashable, Codable, CustomStringConvertible, Sendable {
     let rawValue: String
+
+    var description: String {
+        rawValue
+    }
 
     init(rawValue: String) {
         self.rawValue = rawValue
@@ -67,7 +71,7 @@ struct VirtualMachineResources: Codable, Equatable, Sendable {
     }
 }
 
-struct VirtualMachineRecord: Codable, Equatable, Sendable {
+struct VirtualMachineRecord: Codable, Equatable, Identifiable, Sendable {
     static let currentSchemaVersion = 1
 
     let schemaVersion: Int
@@ -113,5 +117,13 @@ struct VirtualMachineRecord: Codable, Equatable, Sendable {
         copy.state = nextState
         copy.updatedAt = timestamp
         return copy
+    }
+
+    var resourceSummary: String {
+        "\(resources.cpuCount) vCPU • \(resources.memoryMiB / 1024) GiB memory • \(resources.diskGiB) GiB disk"
+    }
+
+    var stateDisplayName: String {
+        state.rawValue.capitalized
     }
 }
