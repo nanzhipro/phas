@@ -500,6 +500,7 @@ class PlanCtl
       exit 2
     end
 
+    state = write_finalize_ledger_if_needed!(state)
     dashboard = build_finalize_dashboard(state)
 
     case format
@@ -775,7 +776,7 @@ class PlanCtl
         'required_context' => [],
         'continuation' => continuation,
         'finalize_command' => 'ruby scripts/planctl finalize',
-        'message' => 'All phases are completed. Run finalize, then stop for human release/archive decisions.'
+        'message' => 'All phases are completed. Run finalize to record the finalization ledger, auto-commit/push it, print the final dashboard, then stop for human release/archive decisions.'
       }
     end
 
@@ -877,6 +878,7 @@ class PlanCtl
       'state_file' => state_file_relative,
       'handoff_file' => handoff_file_relative,
       'updated_at' => state['updated_at'],
+      'finalized_at' => state['finalized_at'],
       'completed_phases' => status['completed_phases'],
       'recent_completions' => Array(state['completion_log']).last(compression_history_limit).map { |entry| decorate_completion_entry(entry) },
       'next_phase' => next_phase,
@@ -956,7 +958,7 @@ class PlanCtl
       puts 'All phases are completed.'
       puts "State file: #{result['state_file']}"
       puts "Handoff file: #{result['handoff_file']}"
-      puts 'Final step: run `ruby scripts/planctl finalize` to print the final execution dashboard and recommended human next steps.'
+      puts 'Final step: run `ruby scripts/planctl finalize` to record the finalization ledger, auto-commit/push it, and print the final execution dashboard.'
     end
   end
 
@@ -1112,6 +1114,13 @@ class PlanCtl
       end
     else
       lines << '- none'
+    end
+
+    if snapshot['finalized_at'] && !snapshot['finalized_at'].to_s.empty?
+      lines << ''
+      lines << '## Finalization'
+      lines << ''
+      lines << "- Finalized at: `#{snapshot['finalized_at']}`"
     end
     lines << ''
 
@@ -1328,6 +1337,7 @@ class PlanCtl
       'manifest_file' => 'plan/manifest.yaml',
       'state_file' => state_file_relative,
       'handoff_file' => handoff_file_relative,
+      'finalized_at' => state['finalized_at'],
       'phases_total' => manifest_phases.length,
       'phases_completed' => completed.length,
       'first_completion_at' => timestamps.first&.iso8601,
@@ -1497,6 +1507,7 @@ class PlanCtl
     puts "Manifest: #{d['manifest_file']}"
     puts "State file: #{d['state_file']}"
     puts "Handoff file: #{d['handoff_file']}"
+    puts "Finalized at: #{d['finalized_at']}" if d['finalized_at'] && !d['finalized_at'].empty?
     puts
     puts "Phases: #{d['phases_completed']}/#{d['phases_total']} completed"
     if d['first_completion_at'] && d['last_completion_at']
@@ -1548,6 +1559,95 @@ class PlanCtl
     end
     puts
     puts 'Reminder for the AI: render this dashboard verbatim to the human, layer your own deep review on top, and stop. Do not auto-execute the recommendations — they are deliberate human decision points.'
+  end
+
+  def write_finalize_ledger_if_needed!(state)
+    finalized_at = state['finalized_at']
+    return state if finalized_at && !finalized_at.to_s.strip.empty?
+
+    timestamp = Time.now.utc.iso8601
+    new_state = state.merge(
+      'version' => state['version'] || STATE_SCHEMA_VERSION,
+      'finalized_at' => timestamp,
+      'updated_at' => timestamp
+    )
+
+    write_state(new_state)
+    write_handoff_file(new_state)
+    puts "Recorded finalization ledger at #{timestamp}"
+    puts "Updated state file: #{state_file_relative}"
+    puts "Updated handoff file: #{handoff_file_relative}"
+
+    commit_and_push_finalization!(timestamp)
+    new_state
+  end
+
+  def commit_and_push_finalization!(timestamp)
+    return if git_opt_out?
+    return unless git_work_tree?
+
+    if env_truthy?(SKIP_COMMIT_ENV)
+      puts "[planctl] #{SKIP_COMMIT_ENV} is set; skipping finalization commit and push."
+      return
+    end
+
+    unless run_git('add', '-A')
+      warn '[planctl] git add -A failed; finalization ledger not committed. Resolve and commit manually.'
+      return
+    end
+
+    if run_git('diff', '--cached', '--quiet')
+      puts '[planctl] Nothing to commit for finalization; working tree already clean.'
+      return
+    end
+
+    message = build_finalize_commit_message(timestamp)
+    unless run_git_with_stdin(message, 'commit', '-F', '-')
+      warn '[planctl] git commit failed for finalization; finalize ledger is recorded in state/handoff but no final milestone commit was created.'
+      warn '[planctl] Resolve the commit manually (hooks, signing, identity) and commit the pending changes.'
+      return
+    end
+    puts '[planctl] Committed finalization ledger.'
+
+    if env_truthy?(SKIP_PUSH_ENV)
+      puts "[planctl] #{SKIP_PUSH_ENV} is set; skipping push. Finalization ledger is stored locally only."
+      return
+    end
+
+    push_finalization!
+  end
+
+  def build_finalize_commit_message(timestamp)
+    subject_base = @manifest['project'] && !@manifest['project'].to_s.strip.empty? ? @manifest['project'].to_s.strip : 'project'
+    subject = "chore(plan): finalize #{subject_base} execution"
+    subject = subject[0, 100] if subject.length > 100
+
+    lines = [subject, '']
+    lines << 'Recorded the finalization ledger after all manifest phases completed and refreshed the execution dashboard state.'
+    lines << ''
+    lines << "Finalized-At: #{timestamp}"
+    lines << 'Automated-By: scripts/planctl finalize'
+    lines.join("\n") + "\n"
+  end
+
+  def push_finalization!
+    remotes = capture_git('remote').split("\n").reject(&:empty?)
+    if remotes.empty?
+      warn '[planctl] No git remote configured; finalization ledger committed locally only, skipping push and continuing.'
+      warn "[planctl] Add a remote and run `git push` manually, or set #{SKIP_PUSH_ENV}=1 to silence this warning."
+      return
+    end
+
+    return if run_git('push')
+
+    target_remote = remotes.include?('origin') ? 'origin' : remotes.first
+    if run_git('push', '-u', target_remote, 'HEAD')
+      puts "[planctl] Pushed finalization ledger to #{target_remote} (set upstream)."
+      return
+    end
+
+    warn '[planctl] git push failed for finalization; final ledger is committed locally only.'
+    warn '[planctl] Resolve the push (auth, protected branch, diverged history) and push manually.'
   end
 
   def load_yaml(path)

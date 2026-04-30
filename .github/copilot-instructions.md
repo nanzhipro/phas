@@ -81,7 +81,7 @@
 1. resolver 报告依赖未满足。
 2. resolver 报告上下文文件缺失。
 3. strict 模式因依赖缺失、上下文缺失或其他外部条件未满足而失败。若 strict 只因当前 phase 仍是占位合同而失败，不算 blocker，按第八节先补正式合同。
-   3a. 当前项目根不是 git 工作区，且未显式设置 `PHASE_CONTRACT_ALLOW_NON_GIT=1`。此时 `scripts/planctl` 的 `advance` / `next` / `resolve` / `complete` / `handoff` 会以 exit code 3 拒绝运行，必须先让用户补齐 `git init` 基线，不得绕过。
+3a. 当前项目根不是 git 工作区，且未显式设置 `PHASE_CONTRACT_ALLOW_NON_GIT=1`。此时 `scripts/planctl` 的 `advance` / `next` / `resolve` / `complete` / `handoff` 会以 exit code 3 拒绝运行，必须先让用户补齐 `git init` 基线，不得绕过。
 4. 当前工作树中存在与当前 phase 契约直接冲突、且无法在不破坏用户已有修改的前提下兼容的变更。
 5. 用户请求与当前 manifest 定义的 phase 顺序、边界或完成规则直接冲突，而规划体系本身尚未被更新。
 
@@ -146,7 +146,7 @@
 当且仅当 `manifest.yaml` 中所有 phase 都已写入 `plan/state.yaml` 的 `completed_phases`、且 `ruby scripts/planctl advance --strict`（或最近一次 `complete --continue`）输出 `ACTION: finalize` 时，进入整体收尾流程。
 
 1. 必须立刻运行 `ruby scripts/planctl finalize`（默认 `text` 格式即可，需要结构化数据时再加 `--format json`）。
-2. `finalize` 在所有 phase 真正完成前会以 exit 2 拒绝执行；不得用 `PHASE_CONTRACT_*` 环境变量或手工修改 `state.yaml` 的方式绕过。
+2. `finalize` 在所有 phase 真正完成前会以 exit 2 拒绝执行；不得用 `PHASE_CONTRACT_*` 环境变量或手工修改 `state.yaml` 的方式绕过。首次成功执行时，`finalize` 会写回 `plan/state.yaml` 的 `finalized_at`、刷新 `plan/handoff.md`，然后执行 `git add -A` → `git commit -F -` → `git push`；若 commit 或 push 失败，只打印 warning，不回滚 ledger。
 3. 拿到 `finalize` 输出后，必须做一次**深入审视**，不要只复述：
    - 通读 `manifest.yaml`、`plan/state.yaml`、`plan/handoff.md` 和最近 N 个里程碑 commit，确认 finalize 仪表盘里的 phase ledger、git 状态、health 检查与实际仓库吻合。
    - 找出 finalize 没明说但客观存在的风险：例如某个 phase 的 summary 与其实际 diff 不一致、某条 recommended next step 在本项目语境下不适用、health notes 提示的轻警告是否需要升级为 issue。
@@ -170,4 +170,4 @@
    - 不得进入下一项规划（不要重跑本 Skill 的脚手架），除非人类显式要求；
    - 不得在 finalize 之后再运行 `complete`、`revert` 或修改 `state.yaml`；如发现需要回退，先把回退请求作为 blocker 报告给人类，由人类决定是否走 `revert`。
 7. 若 finalize 的 health 检查报告 issue（exit 0 但有 issue 项时不会非零退出，需自行解读），按 §七 把它当作 blocker 处理：先汇报，由人类决定是先修问题再宣告完成、还是接受现状收尾。
-8. finalize 是会话级别的“最后一公里”，每一项 plan 仅运行一次（除非 plan 被显式延展、新 phase 被加入 manifest 后又跑完一轮）。重复 `finalize` 不会产生副作用，但应避免把它当成 status 替代品频繁调用。
+8. finalize 是会话级别的“最后一公里”，每一项 plan 仅运行一次（除非 plan 被显式延展、新 phase 被加入 manifest 后又跑完一轮）。重复 `finalize` 在 `finalized_at` 已存在时应保持只读：重新生成仪表盘，但不再重复写 ledger、commit 或 push；也应避免把它当成 status 替代品频繁调用。

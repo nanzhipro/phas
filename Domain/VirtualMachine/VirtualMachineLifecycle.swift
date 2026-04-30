@@ -1,60 +1,69 @@
 import Foundation
 
 enum VirtualMachineLifecycleControllerError: LocalizedError {
-    case missingInstallImagePath
+  case missingInstallImagePath
 
-    var errorDescription: String? {
-        switch self {
-        case .missingInstallImagePath:
-            return "An install image is required before the VM can boot from installation media."
-        }
+  var errorDescription: String? {
+    switch self {
+    case .missingInstallImagePath:
+      return "An install image is required before the VM can boot from installation media."
     }
+  }
 }
 
 struct VirtualMachineLaunchPlan: Equatable, Sendable {
-    let nextState: VirtualMachineState
-    let attachInstallImage: Bool
+  let nextState: VirtualMachineState
+  let attachInstallImage: Bool
 }
 
 struct VirtualMachineLifecycleController {
-    func launchPlan(for record: VirtualMachineRecord) throws -> VirtualMachineLaunchPlan {
-        let attachInstallImage = record.bootSource == .installationImage
+  func launchPlan(for record: VirtualMachineRecord) throws -> VirtualMachineLaunchPlan {
+    let attachInstallImage = record.bootSource == .installationImage
 
-        if attachInstallImage {
-            let installImagePath = record.installImagePath?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            guard !installImagePath.isEmpty else {
-                throw VirtualMachineLifecycleControllerError.missingInstallImagePath
-            }
-        }
-
-        return VirtualMachineLaunchPlan(
-            nextState: attachInstallImage ? .installing : .running,
-            attachInstallImage: attachInstallImage
-        )
+    if attachInstallImage {
+      let installImagePath =
+        record.installImagePath?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+      guard !installImagePath.isEmpty else {
+        throw VirtualMachineLifecycleControllerError.missingInstallImagePath
+      }
     }
 
-    func recordByPreparingToStart(_ record: VirtualMachineRecord, at timestamp: Date) throws -> VirtualMachineRecord {
-        let plan = try launchPlan(for: record)
-        return record.updatingState(plan.nextState, at: timestamp)
+    return VirtualMachineLaunchPlan(
+      nextState: attachInstallImage ? .installing : .running,
+      attachInstallImage: attachInstallImage
+    )
+  }
+
+  func recordByPreparingToStart(_ record: VirtualMachineRecord, at timestamp: Date) throws
+    -> VirtualMachineRecord
+  {
+    let plan = try launchPlan(for: record)
+    return record.updatingState(plan.nextState, at: timestamp)
+  }
+
+  func recordByHandlingGuestStop(_ record: VirtualMachineRecord, at timestamp: Date)
+    -> VirtualMachineRecord
+  {
+    var copy = record
+    copy.state = .stopped
+    copy.updatedAt = timestamp
+
+    if copy.bootSource == .installationImage {
+      copy.bootSource = .diskImage
     }
 
-    func recordByHandlingGuestStop(_ record: VirtualMachineRecord, at timestamp: Date) -> VirtualMachineRecord {
-        var copy = record
-        copy.state = .stopped
-        copy.updatedAt = timestamp
+    return copy
+  }
 
-        if copy.bootSource == .installationImage {
-            copy.bootSource = .diskImage
-        }
+  func recordByHandlingRuntimeFailure(_ record: VirtualMachineRecord, at timestamp: Date)
+    -> VirtualMachineRecord
+  {
+    record.updatingState(.error, at: timestamp)
+  }
 
-        return copy
-    }
-
-    func recordByHandlingRuntimeFailure(_ record: VirtualMachineRecord, at timestamp: Date) -> VirtualMachineRecord {
-        record.updatingState(.error, at: timestamp)
-    }
-
-    func recordByHandlingNetworkDisconnect(_ record: VirtualMachineRecord, at timestamp: Date) -> VirtualMachineRecord {
-        record.updatingState(.error, at: timestamp)
-    }
+  func recordByHandlingNetworkDisconnect(_ record: VirtualMachineRecord, at timestamp: Date)
+    -> VirtualMachineRecord
+  {
+    record.updatingState(.error, at: timestamp)
+  }
 }
