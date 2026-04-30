@@ -20,6 +20,19 @@ xcodebuild -project phas.xcodeproj -scheme phas -configuration Debug build CODE_
 xcodebuild -project phas.xcodeproj -scheme phas -destination 'platform=macOS' test CODE_SIGNING_ALLOWED=NO
 ```
 
+## Run the verification matrix
+
+```bash
+ruby scripts/verify_matrix
+```
+
+Target a specific lane when you only need a narrower regression pass:
+
+```bash
+ruby scripts/verify_matrix smoke
+ruby scripts/verify_matrix runtime recovery
+```
+
 ## Launch from Xcode
 
 Open `phas.xcodeproj`, select the `phas` scheme, then run the app on `My Mac`.

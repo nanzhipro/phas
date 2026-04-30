@@ -8,6 +8,7 @@ completed_phases:
 - phase-4-runtime-ui
 - phase-5-recovery-diagnostics
 - phase-6-verification-matrix
+- phase-7-release-readiness
 completion_log:
 - phase_id: phase-0-app-shell
   completed_at: '2026-04-30T02:09:25Z'
@@ -53,4 +54,10 @@ completion_log:
     lanes, and documentation for local replay.
   next_focus: Finalize the release surface, refresh high-level docs, and produce the
     acceptance ledger for the completed MVP.
-updated_at: '2026-04-30T02:51:55Z'
+- phase_id: phase-7-release-readiness
+  completed_at: '2026-04-30T02:54:01Z'
+  summary: Refreshed the README and operator docs, added an acceptance ledger, and
+    aligned command documentation with the current MVP.
+  next_focus: Run finalize, inspect the final dashboard, and hand release decisions
+    back to the human owner.
+updated_at: '2026-04-30T02:54:01Z'
