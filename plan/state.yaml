@@ -7,6 +7,7 @@ completed_phases:
 - phase-3-virtualization-core
 - phase-4-runtime-ui
 - phase-5-recovery-diagnostics
+- phase-6-verification-matrix
 completion_log:
 - phase_id: phase-0-app-shell
   completed_at: '2026-04-30T02:09:25Z'
@@ -46,4 +47,10 @@ completion_log:
     restoration gating, and tests for transient-state mapping plus recovery actions.
   next_focus: Automate the smoke and regression verification matrix for the runtime,
     recovery, and bundle workflows.
-updated_at: '2026-04-30T02:48:50Z'
+- phase_id: phase-6-verification-matrix
+  completed_at: '2026-04-30T02:51:55Z'
+  summary: Added a Ruby verification matrix with smoke/full defaults, targeted bundle-runtime-recovery
+    lanes, and documentation for local replay.
+  next_focus: Finalize the release surface, refresh high-level docs, and produce the
+    acceptance ledger for the completed MVP.
+updated_at: '2026-04-30T02:51:55Z'

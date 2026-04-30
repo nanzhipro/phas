@@ -1,0 +1,143 @@
+#!/usr/bin/env ruby
+
+ROOT = File.expand_path('..', __dir__)
+PROJECT = 'phas.xcodeproj'
+SCHEME = 'phas'
+DESTINATION = 'platform=macOS'
+
+LANES = {
+  'smoke' => {
+    description: 'Fast product smoke checks across create, runtime presentation, and recovery mapping.',
+    only_testing: [
+      'phasTests/CreateVirtualMachineFlowTests',
+      'phasTests/RuntimePresentationTests',
+      'phasTests/VirtualMachineRecoveryEvaluatorTests'
+    ]
+  },
+  'bundle' => {
+    description: 'Bundle persistence and virtualization assembly regressions.',
+    only_testing: [
+      'phasTests/VirtualMachineBundleStoreTests',
+      'phasTests/VirtualMachineConfigurationFactoryTests',
+      'phasTests/VirtualMachineEventLoggerTests',
+      'phasTests/VirtualMachineLifecycleControllerTests'
+    ]
+  },
+  'runtime' => {
+    description: 'Runtime UI and virtualization runtime regressions.',
+    only_testing: [
+      'phasTests/HomeScreenModelTests',
+      'phasTests/RuntimePresentationTests',
+      'phasTests/VirtualMachineConfigurationFactoryTests',
+      'phasTests/VirtualMachineEventLoggerTests',
+      'phasTests/VirtualMachineLifecycleControllerTests'
+    ]
+  },
+  'recovery' => {
+    description: 'Recovery, relaunch restoration, and diagnostics regressions.',
+    only_testing: [
+      'phasTests/RuntimePresentationTests',
+      'phasTests/VirtualMachineRecoveryEvaluatorTests'
+    ]
+  },
+  'full' => {
+    description: 'Entire phas test suite.',
+    only_testing: nil
+  }
+}.freeze
+
+DEFAULT_LANES = %w[smoke full].freeze
+
+def abort_with_usage(message = nil)
+  warn(message) if message
+  warn <<~USAGE
+    Usage:
+      ruby scripts/verify_matrix [--skip-generate] [lane ...]
+      ruby scripts/verify_matrix --list
+
+    Default lanes: #{DEFAULT_LANES.join(', ')}
+  USAGE
+  exit(message ? 1 : 0)
+end
+
+def run_command(command)
+  puts "$ #{command.join(' ')}"
+  success = system(*command, chdir: ROOT)
+  raise "Command failed: #{command.join(' ')}" unless success
+end
+
+def run_lane(name, lane)
+  command = [
+    'xcodebuild', 'test',
+    '-project', PROJECT,
+    '-scheme', SCHEME,
+    '-destination', DESTINATION,
+    'CODE_SIGNING_ALLOWED=NO'
+  ]
+
+  Array(lane[:only_testing]).each do |target|
+    command << "-only-testing:#{target}"
+  end
+
+  started_at = Time.now
+  begin
+    run_command(command)
+    {
+      name: name,
+      description: lane[:description],
+      success: true,
+      duration: Time.now - started_at
+    }
+  rescue StandardError => error
+    {
+      name: name,
+      description: lane[:description],
+      success: false,
+      duration: Time.now - started_at,
+      error: error.message
+    }
+  end
+end
+
+if ARGV.include?('--help') || ARGV.include?('-h')
+  abort_with_usage
+end
+
+if ARGV.include?('--list')
+  puts 'Available verification lanes:'
+  LANES.each do |name, lane|
+    puts "- #{name}: #{lane[:description]}"
+  end
+  exit 0
+end
+
+skip_generate = ARGV.delete('--skip-generate')
+lanes = ARGV.empty? ? DEFAULT_LANES : ARGV
+unknown_lanes = lanes.reject { |lane| LANES.key?(lane) }
+abort_with_usage("Unknown lane(s): #{unknown_lanes.join(', ')}") unless unknown_lanes.empty?
+
+puts '=== phas verification matrix ==='
+puts "Root: #{ROOT}"
+puts "Lanes: #{lanes.join(', ')}"
+
+run_command(['xcodegen', 'generate']) unless skip_generate
+
+results = lanes.map { |lane_name| run_lane(lane_name, LANES.fetch(lane_name)) }
+
+puts
+puts '=== Matrix Summary ==='
+results.each do |result|
+  status = result[:success] ? 'PASS' : 'FAIL'
+  duration = format('%.1fs', result[:duration])
+  puts "- #{result[:name]}: #{status} (#{duration})"
+  puts "  #{result[:description]}"
+  puts "  #{result[:error]}" if result[:error]
+end
+
+if results.all? { |result| result[:success] }
+  puts 'Matrix result: PASS'
+  exit 0
+end
+
+puts 'Matrix result: FAIL'
+exit 1
