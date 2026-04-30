@@ -6,29 +6,29 @@
 
 - State file: `plan/state.yaml`
 - Handoff file: `plan/handoff.md`
-- Updated at: `2026-04-30T02:22:27Z`
-- Completed phases: `phase-0-app-shell, phase-1-vm-domain, phase-2-create-wizard`
+- Updated at: `2026-04-30T02:38:00Z`
+- Completed phases: `phase-0-app-shell, phase-1-vm-domain, phase-2-create-wizard, phase-3-virtualization-core`
 
 ## 最近完成
 
-- `phase-0-app-shell` bootstrap native app shell and build pipeline: Bootstrapped the native macOS app shell with a generated Xcode project, virtualization entitlement, SwiftUI empty state, and a reproducible build/test path.
-- next focus: Promote phase-1 contracts and implement the VM domain model, bundle metadata, and persistent storage scaffolding.
 - `phase-1-vm-domain` establish VM domain model and bundle persistence: Added VM domain record types, bundle layout persistence, machine identifier storage, sparse disk bootstrap, and unit tests for config round-trips plus delete guards.
 - next focus: Promote the phase-2 contract and implement the VM creation wizard with admission validation on top of the new bundle persistence layer.
 - `phase-2-create-wizard` implement VM creation wizard and admission gates: Added a single-VM creation wizard, host capability snapshot, admission validator, draft bundle creation flow, and tests for blocking versus warning gating.
 - next focus: Promote the phase-3 contract and wire Draft VM records into Virtualization.framework configuration, install-media boot, and runtime launch orchestration.
+- `phase-3-virtualization-core` implement virtualization configuration and install boot path: Added lifecycle state policy, Virtualization configuration/session services, structured runtime logging, and tests for boot assembly plus error mapping.
+- next focus: Implement the runtime window, VM detail surface, and lifecycle controls on top of the new session factory.
 
 ## 下一 Phase
 
-- `phase-3-virtualization-core` implement virtualization configuration and install boot path
-- plan: `plan/phases/phase-3-virtualization-core.md`
-- execution: `plan/execution/phase-3-virtualization-core.md`
-- status: `placeholder contracts need upgrade first (plan/phases/phase-3-virtualization-core.md, plan/execution/phase-3-virtualization-core.md)`
+- `phase-4-runtime-ui` deliver runtime window, detail view, and lifecycle controls
+- plan: `plan/phases/phase-4-runtime-ui.md`
+- execution: `plan/execution/phase-4-runtime-ui.md`
+- status: `placeholder contracts need upgrade first (plan/phases/phase-4-runtime-ui.md, plan/execution/phase-4-runtime-ui.md)`
 
 下一步读取顺序：
 1. `plan/common.md`
-2. `plan/phases/phase-3-virtualization-core.md`
-3. `plan/execution/phase-3-virtualization-core.md`
+2. `plan/phases/phase-4-runtime-ui.md`
+3. `plan/execution/phase-4-runtime-ui.md`
 
 ## 压缩恢复顺序
 

@@ -33,4 +33,14 @@ struct MachineIdentifierStore {
 
         return identifier
     }
+
+    func loadOrCreateMachineIdentifier(at url: URL) throws -> VZGenericMachineIdentifier {
+        let data = try loadOrCreateData(at: url)
+
+        guard let identifier = VZGenericMachineIdentifier(dataRepresentation: data) else {
+            throw MachineIdentifierStoreError.invalidIdentifierData(url)
+        }
+
+        return identifier
+    }
 }

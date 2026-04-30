@@ -4,6 +4,7 @@ completed_phases:
 - phase-0-app-shell
 - phase-1-vm-domain
 - phase-2-create-wizard
+- phase-3-virtualization-core
 completion_log:
 - phase_id: phase-0-app-shell
   completed_at: '2026-04-30T02:09:25Z'
@@ -25,4 +26,10 @@ completion_log:
     validator, draft bundle creation flow, and tests for blocking versus warning gating.
   next_focus: Promote the phase-3 contract and wire Draft VM records into Virtualization.framework
     configuration, install-media boot, and runtime launch orchestration.
-updated_at: '2026-04-30T02:22:27Z'
+- phase_id: phase-3-virtualization-core
+  completed_at: '2026-04-30T02:38:00Z'
+  summary: Added lifecycle state policy, Virtualization configuration/session services,
+    structured runtime logging, and tests for boot assembly plus error mapping.
+  next_focus: Implement the runtime window, VM detail surface, and lifecycle controls
+    on top of the new session factory.
+updated_at: '2026-04-30T02:38:00Z'

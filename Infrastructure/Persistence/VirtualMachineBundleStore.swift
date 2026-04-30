@@ -75,18 +75,15 @@ struct VirtualMachineBundleStore {
     }
 
     @discardableResult
-    func bootstrapBundle(for record: VirtualMachineRecord) throws -> VirtualMachineBundleLayout {
-        let layout = layout(for: record.id)
-
-        try fileManager.createDirectory(at: bundleRootURL, withIntermediateDirectories: true)
-        try fileManager.createDirectory(at: layout.rootURL, withIntermediateDirectories: true)
-        try fileManager.createDirectory(at: layout.logsDirectoryURL, withIntermediateDirectories: true)
-
+    func ensureRuntimeArtifacts(for record: VirtualMachineRecord) throws -> VirtualMachineBundleLayout {
+        let layout = try ensureBundleStructure(for: record)
         _ = try machineIdentifierStore.loadOrCreateData(at: layout.machineIdentifierURL)
-        try createSparseDiskIfNeeded(at: layout.diskImageURL, logicalSizeInBytes: record.resources.diskSizeBytes)
-        try save(record, to: layout.configurationURL)
-
         return layout
+    }
+
+    @discardableResult
+    func bootstrapBundle(for record: VirtualMachineRecord) throws -> VirtualMachineBundleLayout {
+        return try ensureRuntimeArtifacts(for: record)
     }
 
     func save(_ record: VirtualMachineRecord) throws {
@@ -155,6 +152,18 @@ struct VirtualMachineBundleStore {
     private func save(_ record: VirtualMachineRecord, to url: URL) throws {
         let data = try encoder.encode(record)
         try data.write(to: url, options: .atomic)
+    }
+
+    private func ensureBundleStructure(for record: VirtualMachineRecord) throws -> VirtualMachineBundleLayout {
+        let layout = layout(for: record.id)
+
+        try fileManager.createDirectory(at: bundleRootURL, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: layout.rootURL, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: layout.logsDirectoryURL, withIntermediateDirectories: true)
+        try createSparseDiskIfNeeded(at: layout.diskImageURL, logicalSizeInBytes: record.resources.diskSizeBytes)
+        try save(record, to: layout.configurationURL)
+
+        return layout
     }
 
     private func createSparseDiskIfNeeded(at url: URL, logicalSizeInBytes: UInt64) throws {
