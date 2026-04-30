@@ -5,6 +5,7 @@ completed_phases:
 - phase-1-vm-domain
 - phase-2-create-wizard
 - phase-3-virtualization-core
+- phase-4-runtime-ui
 completion_log:
 - phase_id: phase-0-app-shell
   completed_at: '2026-04-30T02:09:25Z'
@@ -32,4 +33,10 @@ completion_log:
     structured runtime logging, and tests for boot assembly plus error mapping.
   next_focus: Implement the runtime window, VM detail surface, and lifecycle controls
     on top of the new session factory.
-updated_at: '2026-04-30T02:38:00Z'
+- phase_id: phase-4-runtime-ui
+  completed_at: '2026-04-30T02:44:32Z'
+  summary: Added a real runtime window, VM detail snapshots, lifecycle controls, and
+    tests for button availability plus runtime detail presentation.
+  next_focus: Implement recovery flows, diagnostics, and relaunch-aware restoration
+    on top of the runtime window and session service.
+updated_at: '2026-04-30T02:44:32Z'

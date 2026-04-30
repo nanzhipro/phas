@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 
 struct HomeRootView: View {
+    @Environment(\.openWindow) private var openWindow
+
     let model: HomeScreenModel
     @ObservedObject var library: VirtualMachineLibrary
 
@@ -44,7 +46,7 @@ struct HomeRootView: View {
                 VStack(alignment: .leading, spacing: 28) {
                     heroCard
                     if let record = library.currentRecord {
-                        vmSummaryCard(record)
+                        vmOverviewSection(record)
                     } else {
                         HStack(alignment: .top, spacing: 20) {
                             summaryCard(
@@ -109,11 +111,19 @@ struct HomeRootView: View {
                 .font(.body)
                 .foregroundStyle(.primary)
             HStack(spacing: 12) {
-                Button(model.primaryActionTitle) {
-                    library.presentCreateWizard()
+                if library.currentRecord == nil {
+                    Button(model.primaryActionTitle) {
+                        library.presentCreateWizard()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!library.canCreateVirtualMachine)
+                } else {
+                    Button("Open Runtime Window") {
+                        openRuntimeWindow()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!library.runtimeControlAvailability.canOpenWindow)
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(!library.canCreateVirtualMachine)
 
                 Button(model.secondaryActionTitle) {
                     openVMStorageFolder()
@@ -142,17 +152,18 @@ struct HomeRootView: View {
         )
     }
 
-    private func vmSummaryCard(_ record: VirtualMachineRecord) -> some View {
-        summaryCard(
-            title: "Current VM",
-            icon: "shippingbox.circle",
-            lines: [
-                "State: \(record.stateDisplayName)",
-                "Resources: \(record.resourceSummary)",
-                "Install image: \(record.installImagePath ?? "Not set")",
-                "Bundle: \(library.bundleLocation(for: record).path)"
-            ]
-        )
+    private func vmOverviewSection(_ record: VirtualMachineRecord) -> some View {
+        HStack(alignment: .top, spacing: 20) {
+            let snapshot = library.runtimeDetailSnapshot(for: record)
+            summaryCard(
+                title: "Current VM",
+                icon: "shippingbox.circle",
+                lines: snapshot.detailLines
+            )
+
+            runtimeControlCard(record)
+        }
+        .frame(maxWidth: .infinity)
     }
 
     private func summaryCard(title: String, icon: String, lines: [String]) -> some View {
@@ -187,7 +198,7 @@ struct HomeRootView: View {
             return model.emptyStateMessage
         }
 
-        return "A single draft VM already exists. The MVP stays intentionally single-VM, so creation is now blocked until delete support lands in a later phase."
+        return "A single VM already exists. The MVP stays intentionally single-VM, so creation remains blocked while runtime inspection, start/stop control, and error handling now move into the main product surface."
     }
 
     private var hostSummaryLines: [String] {
@@ -203,6 +214,91 @@ struct HomeRootView: View {
 
     private func openVMStorageFolder() {
         NSWorkspace.shared.open(library.bundleRootURL)
+    }
+
+    private func openRuntimeWindow() {
+        guard library.prepareRuntimeWindow() else {
+            return
+        }
+
+        openWindow(id: phasApp.runtimeWindowID)
+    }
+
+    private func openRuntimeLogs(for record: VirtualMachineRecord) {
+        let logURL = library.logFileURL(for: record)
+        let destination = FileManager.default.fileExists(atPath: logURL.path) ? logURL : logURL.deletingLastPathComponent()
+        NSWorkspace.shared.open(destination)
+    }
+
+    private func runtimeControlCard(_ record: VirtualMachineRecord) -> some View {
+        let availability = library.runtimeControlAvailability
+
+        return VStack(alignment: .leading, spacing: 16) {
+            Label("Lifecycle", systemImage: "playpause.circle")
+                .font(.headline)
+
+            Text("Phase-4 keeps the UI bound to product-level state and the phase-3 session service. The window, controls, and detail surface stay on the single-VM MVP path.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            Button("Open Runtime Window") {
+                openRuntimeWindow()
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(!availability.canOpenWindow)
+
+            HStack(spacing: 10) {
+                Button("Start") {
+                    Task {
+                        await library.startCurrentVirtualMachine()
+                    }
+                }
+                .buttonStyle(.bordered)
+                .disabled(!availability.canStart)
+
+                Button("Request Stop") {
+                    library.requestCurrentVirtualMachineStop()
+                }
+                .buttonStyle(.bordered)
+                .disabled(!availability.canRequestStop)
+
+                Button("Force Stop") {
+                    Task {
+                        await library.forceStopCurrentVirtualMachine()
+                    }
+                }
+                .buttonStyle(.bordered)
+                .disabled(!availability.canForceStop)
+            }
+
+            HStack(spacing: 10) {
+                Button("Open VM Storage") {
+                    openVMStorageFolder()
+                }
+                .buttonStyle(.bordered)
+
+                Button("Open Logs") {
+                    openRuntimeLogs(for: record)
+                }
+                .buttonStyle(.bordered)
+            }
+
+            if let latestSummary = library.latestRuntimeSummary {
+                Text(latestSummary)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color(nsColor: .controlBackgroundColor))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+        )
     }
 }
 

@@ -21,6 +21,18 @@ final class VirtualMachineSession: NSObject, ObservableObject, VZVirtualMachineD
     let machine: VZVirtualMachine
     let bundleLayout: VirtualMachineBundleLayout
 
+    var canStart: Bool {
+        machine.canStart
+    }
+
+    var canRequestStop: Bool {
+        machine.canRequestStop
+    }
+
+    var canForceStop: Bool {
+        machine.canStop
+    }
+
     private let bundleStore: VirtualMachineBundleStore
     private let lifecycleController: VirtualMachineLifecycleController
     private let logger: any VirtualMachineEventLogging

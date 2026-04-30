@@ -6,29 +6,29 @@
 
 - State file: `plan/state.yaml`
 - Handoff file: `plan/handoff.md`
-- Updated at: `2026-04-30T02:38:00Z`
-- Completed phases: `phase-0-app-shell, phase-1-vm-domain, phase-2-create-wizard, phase-3-virtualization-core`
+- Updated at: `2026-04-30T02:44:32Z`
+- Completed phases: `phase-0-app-shell, phase-1-vm-domain, phase-2-create-wizard, phase-3-virtualization-core, phase-4-runtime-ui`
 
 ## 最近完成
 
-- `phase-1-vm-domain` establish VM domain model and bundle persistence: Added VM domain record types, bundle layout persistence, machine identifier storage, sparse disk bootstrap, and unit tests for config round-trips plus delete guards.
-- next focus: Promote the phase-2 contract and implement the VM creation wizard with admission validation on top of the new bundle persistence layer.
 - `phase-2-create-wizard` implement VM creation wizard and admission gates: Added a single-VM creation wizard, host capability snapshot, admission validator, draft bundle creation flow, and tests for blocking versus warning gating.
 - next focus: Promote the phase-3 contract and wire Draft VM records into Virtualization.framework configuration, install-media boot, and runtime launch orchestration.
 - `phase-3-virtualization-core` implement virtualization configuration and install boot path: Added lifecycle state policy, Virtualization configuration/session services, structured runtime logging, and tests for boot assembly plus error mapping.
 - next focus: Implement the runtime window, VM detail surface, and lifecycle controls on top of the new session factory.
+- `phase-4-runtime-ui` deliver runtime window, detail view, and lifecycle controls: Added a real runtime window, VM detail snapshots, lifecycle controls, and tests for button availability plus runtime detail presentation.
+- next focus: Implement recovery flows, diagnostics, and relaunch-aware restoration on top of the runtime window and session service.
 
 ## 下一 Phase
 
-- `phase-4-runtime-ui` deliver runtime window, detail view, and lifecycle controls
-- plan: `plan/phases/phase-4-runtime-ui.md`
-- execution: `plan/execution/phase-4-runtime-ui.md`
-- status: `placeholder contracts need upgrade first (plan/phases/phase-4-runtime-ui.md, plan/execution/phase-4-runtime-ui.md)`
+- `phase-5-recovery-diagnostics` add recovery flows, diagnostics, and app relaunch restoration
+- plan: `plan/phases/phase-5-recovery-diagnostics.md`
+- execution: `plan/execution/phase-5-recovery-diagnostics.md`
+- status: `placeholder contracts need upgrade first (plan/phases/phase-5-recovery-diagnostics.md, plan/execution/phase-5-recovery-diagnostics.md)`
 
 下一步读取顺序：
 1. `plan/common.md`
-2. `plan/phases/phase-4-runtime-ui.md`
-3. `plan/execution/phase-4-runtime-ui.md`
+2. `plan/phases/phase-5-recovery-diagnostics.md`
+3. `plan/execution/phase-5-recovery-diagnostics.md`
 
 ## 压缩恢复顺序
 
