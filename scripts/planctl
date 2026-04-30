@@ -191,7 +191,7 @@ class PlanCtl
       puts "Next phase: #{next_phase['id']} (#{next_phase['title']}). Run: ruby scripts/planctl advance --strict"
     else
       puts 'All phases are completed. No remaining work.'
-      puts 'Final step: run `ruby scripts/planctl finalize` to print the final execution dashboard and recommended human next steps.'
+      puts 'Final step: run `ruby scripts/planctl finalize` to record the finalization ledger, auto-commit/push it, and print the final execution dashboard.'
     end
 
     if continue_run || autonomous_continuation?
